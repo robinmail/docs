@@ -1,66 +1,60 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" role="img" aria-labelledby="t d" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" role="img" aria-labelledby="t d" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14">
   <title id="t">A robinmail cluster</title>
-  <desc id="d">Three nodes. Each node runs robinmail next to its own rqlite, whose HTTP API is on loopback with a login. The rqlite nodes form one Raft cluster over mutual TLS. The robinmail nodes copy blob files to each other over mutual TLS, pinned to the certificates in the node table.</desc>
+  <desc id="d">Three nodes. Each node is one robinmail process with its own SQLite database, its Raft log and its blob files on its own disk. The nodes send each other Raft messages, snapshots and blob files over mutual TLS, pinned to the certificates of the Raft members. No node has a database port.</desc>
   <style>
     .bg { fill: #ffffff; }
-    .node { fill: #f4f6fa; stroke: #4a5568; stroke-width: 1.5; stroke-dasharray: 5 4; }
-    .rm { fill: #e8eefc; stroke: #2b4c9b; stroke-width: 2; }
-    .rq { fill: #eef8f0; stroke: #2f7a44; stroke-width: 1.5; }
+    .node { fill: #e8eefc; stroke: #2b4c9b; stroke-width: 2; }
+    .db { fill: #eef8f0; stroke: #2f7a44; stroke-width: 1.5; }
+    .bl { fill: #f4f6fa; stroke: #4a5568; stroke-width: 1.5; }
     .t { fill: #1a202c; }
     .s { fill: #4a5568; font-size: 12px; }
     .h { font-weight: 600; }
     .lb { stroke: #2b4c9b; stroke-width: 1.5; fill: none; }
-    .lr { stroke: #2f7a44; stroke-width: 1.5; fill: none; }
-    .lv { stroke: #4a5568; stroke-width: 1.5; fill: none; }
   </style>
-  <rect class="bg" width="760" height="380" rx="10"/>
+  <rect class="bg" width="760" height="360" rx="10"/>
 
   <g>
-    <rect class="node" x="20" y="40" width="210" height="250" rx="8"/>
-    <text class="s" x="32" y="62">node a</text>
-    <rect class="rm" x="45" y="80" width="160" height="60" rx="6"/>
-    <text class="t h" x="125" y="106" text-anchor="middle">robinmail</text>
-    <text class="s" x="125" y="126" text-anchor="middle">blob files on disk</text>
-    <path class="lv" d="M125 140 V200"/>
-    <text class="s" x="132" y="175">loopback, login</text>
-    <rect class="rq" x="45" y="200" width="160" height="60" rx="6"/>
-    <text class="t h" x="125" y="226" text-anchor="middle">rqlite</text>
-    <text class="s" x="125" y="246" text-anchor="middle">API on 127.0.0.1</text>
+    <rect class="node" x="20" y="50" width="210" height="220" rx="8"/>
+    <text class="t h" x="125" y="78" text-anchor="middle">robinmail, node a</text>
+    <rect class="db" x="40" y="96" width="170" height="70" rx="6"/>
+    <text class="t h" x="125" y="122" text-anchor="middle">database</text>
+    <text class="s" x="125" y="142" text-anchor="middle">data.db and raft.db</text>
+    <text class="s" x="125" y="158" text-anchor="middle">in data_dir/db</text>
+    <rect class="bl" x="40" y="180" width="170" height="70" rx="6"/>
+    <text class="t h" x="125" y="206" text-anchor="middle">blob files</text>
+    <text class="s" x="125" y="226" text-anchor="middle">encrypted, every message</text>
+    <text class="s" x="125" y="242" text-anchor="middle">in data_dir/blobs</text>
   </g>
   <g>
-    <rect class="node" x="275" y="40" width="210" height="250" rx="8"/>
-    <text class="s" x="287" y="62">node b</text>
-    <rect class="rm" x="300" y="80" width="160" height="60" rx="6"/>
-    <text class="t h" x="380" y="106" text-anchor="middle">robinmail</text>
-    <text class="s" x="380" y="126" text-anchor="middle">blob files on disk</text>
-    <path class="lv" d="M380 140 V200"/>
-    <text class="s" x="387" y="175">loopback, login</text>
-    <rect class="rq" x="300" y="200" width="160" height="60" rx="6"/>
-    <text class="t h" x="380" y="226" text-anchor="middle">rqlite</text>
-    <text class="s" x="380" y="246" text-anchor="middle">API on 127.0.0.1</text>
+    <rect class="node" x="275" y="50" width="210" height="220" rx="8"/>
+    <text class="t h" x="380" y="78" text-anchor="middle">robinmail, node b</text>
+    <rect class="db" x="295" y="96" width="170" height="70" rx="6"/>
+    <text class="t h" x="380" y="122" text-anchor="middle">database</text>
+    <text class="s" x="380" y="142" text-anchor="middle">data.db and raft.db</text>
+    <text class="s" x="380" y="158" text-anchor="middle">in data_dir/db</text>
+    <rect class="bl" x="295" y="180" width="170" height="70" rx="6"/>
+    <text class="t h" x="380" y="206" text-anchor="middle">blob files</text>
+    <text class="s" x="380" y="226" text-anchor="middle">encrypted, every message</text>
+    <text class="s" x="380" y="242" text-anchor="middle">in data_dir/blobs</text>
   </g>
   <g>
-    <rect class="node" x="530" y="40" width="210" height="250" rx="8"/>
-    <text class="s" x="542" y="62">node c</text>
-    <rect class="rm" x="555" y="80" width="160" height="60" rx="6"/>
-    <text class="t h" x="635" y="106" text-anchor="middle">robinmail</text>
-    <text class="s" x="635" y="126" text-anchor="middle">blob files on disk</text>
-    <path class="lv" d="M635 140 V200"/>
-    <text class="s" x="642" y="175">loopback, login</text>
-    <rect class="rq" x="555" y="200" width="160" height="60" rx="6"/>
-    <text class="t h" x="635" y="226" text-anchor="middle">rqlite</text>
-    <text class="s" x="635" y="246" text-anchor="middle">API on 127.0.0.1</text>
+    <rect class="node" x="530" y="50" width="210" height="220" rx="8"/>
+    <text class="t h" x="635" y="78" text-anchor="middle">robinmail, node c</text>
+    <rect class="db" x="550" y="96" width="170" height="70" rx="6"/>
+    <text class="t h" x="635" y="122" text-anchor="middle">database</text>
+    <text class="s" x="635" y="142" text-anchor="middle">data.db and raft.db</text>
+    <text class="s" x="635" y="158" text-anchor="middle">in data_dir/db</text>
+    <rect class="bl" x="550" y="180" width="170" height="70" rx="6"/>
+    <text class="t h" x="635" y="206" text-anchor="middle">blob files</text>
+    <text class="s" x="635" y="226" text-anchor="middle">encrypted, every message</text>
+    <text class="s" x="635" y="242" text-anchor="middle">in data_dir/blobs</text>
   </g>
 
-  <path class="lb" d="M205 100 H300"/>
-  <path class="lb" d="M460 100 H555"/>
-  <path class="lb" d="M125 80 V22 H635 V80"/>
-  <path class="lr" d="M205 240 H300"/>
-  <path class="lr" d="M460 240 H555"/>
-  <path class="lr" d="M125 260 V310 H635 V260"/>
+  <path class="lb" d="M230 160 H275"/>
+  <path class="lb" d="M485 160 H530"/>
+  <path class="lb" d="M125 50 V24 H635 V50"/>
 
-  <line class="lb" x1="40" y1="340" x2="80" y2="340"/>
-  <text class="t" x="90" y="345">blob copies: mutual TLS, pinned to the node table</text>
-  <line class="lr" x1="430" y1="340" x2="470" y2="340"/>
-  <text class="t" x="480" y="345">Raft: mutual TLS, CA of the cluster</text>
+  <line class="lb" x1="40" y1="310" x2="80" y2="310"/>
+  <text class="t" x="90" y="315">port 7443: Raft messages, snapshots and blob copies, mutual TLS pinned to the members</text>
+  <text class="s" x="90" y="338">No SQL on any port. A command on a node reaches its own server over loopback.</text>
 </svg>

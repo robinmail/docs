@@ -36,8 +36,8 @@ Limits: `smtp.max_message_bytes` (25 MiB), `max_recipients` (100), `max_connecti
 ## Outbound
 
 - MX lookup, then delivery with STARTTLS.
-- MTA-STS (RFC 8461) for recipient domains, with the policies cached in rqlite for all
-  nodes.
+- MTA-STS (RFC 8461) for recipient domains, with the policies cached in the database for
+  all nodes.
 - Retries: five minutes, doubling up to four hours, for five days. Then a bounce.
 - Bounces as RFC 3464 delivery status notifications.
 - TLS reports (RFC 8460) sent once a day to domains that ask for them.

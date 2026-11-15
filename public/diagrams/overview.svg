@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" role="img" aria-labelledby="t d" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14">
   <title id="t">robinmail: one binary</title>
-  <desc id="d">Mail servers, mail programs and browsers connect to one robinmail binary on ports 25, 465 and 587, 993 and 143, and 443. robinmail keeps metadata in rqlite, message files encrypted on its own disk, and asks Rspamd about spam, SPF, DKIM and DMARC.</desc>
+  <desc id="d">Mail servers, mail programs, browsers and calendar programs connect to one robinmail binary on ports 25, 465 and 587, 993 and 143, and 443. robinmail keeps metadata in its own SQLite database, replicated with Raft, message files encrypted on its own disk, and asks Rspamd about spam, SPF, DKIM and DMARC.</desc>
   <style>
     .bg { fill: #ffffff; }
     .box { fill: #f4f6fa; stroke: #4a5568; stroke-width: 1.5; }
@@ -24,7 +24,8 @@
   <rect class="box" x="400" y="20" width="160" height="50" rx="6"/>
   <text class="t" x="480" y="50" text-anchor="middle">Mail programs</text>
   <rect class="box" x="590" y="20" width="150" height="50" rx="6"/>
-  <text class="t" x="665" y="50" text-anchor="middle">Browsers</text>
+  <text class="t" x="665" y="42" text-anchor="middle">Browsers,</text>
+  <text class="t" x="665" y="60" text-anchor="middle">calendar programs</text>
 
   <path class="l" d="M100 70 V140"/>
   <text class="s" x="108" y="110">SMTP 25</text>
@@ -37,16 +38,16 @@
 
   <rect class="main" x="20" y="140" width="720" height="110" rx="8"/>
   <text class="t h" x="380" y="168" text-anchor="middle">robinmail (one Go binary)</text>
-  <text class="t" x="380" y="196" text-anchor="middle">inbound SMTP · submission · outbound queue · IMAP · JMAP · login · webmail</text>
-  <text class="s" x="380" y="222" text-anchor="middle">delivery, Sieve, aliases and SRS, push, full-text search, blob copies, repair, scrub</text>
+  <text class="t" x="380" y="196" text-anchor="middle">inbound SMTP · submission · outbound queue · IMAP · JMAP · CalDAV · CardDAV · webmail</text>
+  <text class="s" x="380" y="222" text-anchor="middle">delivery, Sieve, aliases and SRS, invitations, push, search, Raft, blob copies, repair, scrub</text>
 
   <path class="l" d="M140 250 V320"/>
   <path class="l" d="M380 250 V320"/>
   <path class="l" d="M620 250 V320"/>
 
   <rect class="box" x="40" y="320" width="200" height="60" rx="6"/>
-  <text class="t h" x="140" y="345" text-anchor="middle">rqlite</text>
-  <text class="s" x="140" y="365" text-anchor="middle">all metadata, over HTTP</text>
+  <text class="t h" x="140" y="345" text-anchor="middle">database</text>
+  <text class="s" x="140" y="365" text-anchor="middle">SQLite and Raft log, data_dir/db</text>
   <rect class="box" x="280" y="320" width="200" height="60" rx="6"/>
   <text class="t h" x="380" y="345" text-anchor="middle">blob files</text>
   <text class="s" x="380" y="365" text-anchor="middle">encrypted, on the node's disk</text>

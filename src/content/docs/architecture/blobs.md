@@ -22,7 +22,7 @@ A file is never changed after it is written.
 Each file is encrypted with XChaCha20-Poly1305 (from `golang.org/x/crypto`) under a key of
 its account.
 
-- The account key is in the `account` row in rqlite, wrapped by the master key.
+- The account key is in the `account` row of the database, wrapped by the master key.
 - The master key is in the master key file. Every node has the same file.
 - Without the master key file, the stored mail cannot be read. Back it up, apart from the
   data and apart from the backups.
@@ -44,8 +44,8 @@ compromised running server, which holds the master key.
 
 ## Writing
 
-A file is written to a temporary file, synced and renamed into place before the batch in
-rqlite that refers to it. A crash leaves a file nothing refers to, never a row without a
+A file is written to a temporary file, synced and renamed into place before the database
+batch that refers to it. A crash leaves a file nothing refers to, never a row without a
 file.
 
 ## Master key rotation

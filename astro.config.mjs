@@ -6,6 +6,8 @@ import starlight from '@astrojs/starlight';
 export default defineConfig({
 	site: 'https://robinmail.github.io',
 	base: '/docs',
+	// The page had this name while the database was rqlite (until phase 10).
+	redirects: { '/architecture/rqlite': '/docs/architecture/database/' },
 	integrations: [
 		starlight({
 			title: 'robinmail',
@@ -33,7 +35,7 @@ export default defineConfig({
 					label: 'Architecture',
 					items: [
 						{ label: 'Overview', slug: 'architecture/overview' },
-						{ label: 'Metadata in rqlite', slug: 'architecture/rqlite' },
+						{ label: 'Metadata: Raft and SQLite', slug: 'architecture/database' },
 						{ label: 'Message files', slug: 'architecture/blobs' },
 						{ label: 'A cluster', slug: 'architecture/cluster' },
 						{ label: 'Protocols', slug: 'architecture/protocols' },
