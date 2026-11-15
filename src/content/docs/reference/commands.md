@@ -8,8 +8,18 @@ robinmail [-config robinmail.json] <command>
 ```
 
 `robinmail` without a command prints the list. Every command reads the config and opens
-the database, so it needs rqlite and the master key file. The exception is
-`key generate`, which makes that file.
+the database, so it needs the master key file. The exceptions are `key generate`, which
+makes that file, and `node id` and `node join`, which run before the database exists.
+
+How a command reaches the database:
+
+- **The server runs on this node.** The command asks it, over the control listener: TLS on
+  `127.0.0.1`, which accepts only this node's own certificate. Its address is in
+  `<data_dir>/db/control`.
+- **No server runs.** The command opens the database itself, and waits while another
+  command has it.
+- **A node of a cluster of several** needs its server running. Without it the command
+  refuses and says so.
 
 - A command has ten minutes. `backup`, `restore`, `restore-blobs`, `scrub`, `repair` and
   `reindex` have 24 hours.
@@ -38,8 +48,8 @@ the database, so it needs rqlite and the master key file. The exception is
 
 | Command | What it does |
 |---|---|
-| `backup <directory>` | Write the database and all message files into a new directory. |
-| `restore <directory>` | Load a backup into an empty database and this node's blob directory. |
+| `backup <directory>` | Write the database and all message files into a new directory. The database is copied online, with everything committed when the backup began. |
+| `restore <directory>` | Load a backup into an empty database of a cluster of one, and this node's blob directory. Add the other nodes afterwards; they get the database as a snapshot. |
 | `restore-blobs <directory>` | Copy the message files of a backup that this node lacks, after a failed restore. |
 
 A restore refuses a backup made under another master key, one without its manifest, one
@@ -117,8 +127,28 @@ backup and no restore of one account.
 | `sweep` | Remove this node's message files that no email refers to. |
 | `repair` | Fetch the message files this node lacks from the other nodes. |
 | `scrub` | Check this node's message files against their hashes. In a cluster, replace a corrupt one from another node. |
-| `node list` | List the nodes of the cluster. |
-| `node remove <id>` | Take a stopped node out of the cluster. |
+
+## The cluster
+
+See [Forming a cluster](/docs/architecture/cluster/#forming-a-cluster).
+
+| Command | What it does |
+|---|---|
+| `node id` | On a new node: print its id, address and certificate, for `node add`. Makes the node's key and certificate if there are none. |
+| `node add <id> <address> <certificate>` | On a member: admit a node. Prints the `node join` line to run on the new node. |
+| `node join <address> <certificate>` | On a new node with an empty database: fetch the members from the member at that address, which must show that certificate. Then `serve`. |
+| `node list` | The members: node id, Raft id, address, certificate, leader, how far each is, and the last heartbeat. |
+| `node remove <id>` | Take a stopped node out of Raft and the node table. |
+
+## The database
+
+| Command | What it does |
+|---|---|
+| `db query <sql>` | Run a read, linearizable. Prints one JSON row per line. |
+| `db exec <sql>` | Run a write through the log, on every node. Prints how many rows changed. For repairs by hand. |
+
+These are a console for the operator, not an API. They need what opening the database
+needs: a shell on a node. `db exec` is written to the audit log.
 
 ## DNS
 

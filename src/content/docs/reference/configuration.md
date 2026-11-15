@@ -12,7 +12,9 @@ in the repository shows every block.
   `submission.undo_seconds` set to `0` means no wait.
 - A relative path is resolved against the directory of the config file.
 - A change needs a restart. Domains, users and aliases are not in this file: they live in
-  rqlite and change at once on every node.
+  the database and change at once on every node.
+- A config with an `rqlite` block is refused. That block was where the metadata lived until
+  phase 10; remove it. The database is now in `<data_dir>/db`.
 - Numbers below in square brackets are defaults.
 
 ## Top level
@@ -20,35 +22,22 @@ in the repository shows every block.
 | Field | What it sets |
 |---|---|
 | `hostname` | The name the server announces in SMTP and asks certificates for. Required. |
-| `data_dir` | Where this node's message files live, in `<data_dir>/blobs`, and the ACME cache. Required. |
+| `data_dir` | This node's database in `<data_dir>/db`, its message files in `<data_dir>/blobs`, its node key and certificate, and the ACME cache. Required. Each node has its own. |
 | `master_key_file` | The key file that wraps every account key. Required. Make it with `robinmail key generate`. Every node of a cluster needs the same file. Losing it loses all mail: back it up, apart from the data. |
-
-## `rqlite`
-
-Where all metadata lives. At least one URL is required.
-
-| Field | What it sets |
-|---|---|
-| `url` | One rqlite node, `http://` or `https://`. |
-| `urls` | Several nodes of the same rqlite cluster. The first is tried first. |
-| `auth_file` | A file with one line `user:password`, readable by its owner only. The user needs rqlite's permissions `execute` and `query`, and `backup` and `load` for those commands. |
-| `ca_file` | The CA certificate (PEM) of the rqlite nodes, for `https` URLs. Empty: the system's CAs. |
-
-A URL may carry `user:password@`. Prefer `auth_file`: a URL with a password ends up in
-process lists and shell histories. See
-[rqlite, locked down](/docs/architecture/rqlite/#rqlite-locked-down).
 
 ## `node`
 
-Makes this robinmail a member of a cluster. Without an `id` it runs alone and the other
-fields must be empty.
+Makes this robinmail a node that other nodes can reach. Without an `id` it runs alone and
+the other fields must be empty. With it, the node can form a cluster or join one with the
+`node` commands; see [Forming a cluster](/docs/architecture/cluster/#forming-a-cluster).
+Every node of a cluster needs this section and the same master key file.
 
 | Field | What it sets |
 |---|---|
 | `id` | The node's name in the node table: 1 to 32 lowercase letters, digits or `-`. Unique, and should not change. |
-| `listen` | Where the node listens for the other nodes, such as `:7443`. Mutual TLS. |
+| `listen` | Where the node listens for the other nodes, such as `:7443`: Raft messages, snapshots and message files, over mutual TLS. |
 | `address` | The `host:port` under which the other nodes reach `listen`. |
-| `blob_copies` | How many nodes must have a message file before a write is acknowledged, this one included. [2] |
+| `blob_copies` | How many nodes must have a message file before a write is acknowledged, this one included. With fewer nodes, all of them. [2] |
 | `repair_interval_seconds` | How often the node fetches the files it lacks. It also does so at start. [300] |
 
 ## `tls`
