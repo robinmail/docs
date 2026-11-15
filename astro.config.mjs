@@ -11,7 +11,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'robinmail',
-			description: 'Documentation of robinmail, a JMAP-first mail server in Go. A learning project.',
+			description: 'Documentation of robinmail, a JMAP-first mail, calendar and contacts server in Go. A learning project.',
 			social: [{ icon: 'github', label: 'robinmail on GitHub', href: 'https://github.com/robinmail/robinmail' }],
 			editLink: { baseUrl: 'https://github.com/robinmail/docs/edit/main/' },
 			lastUpdated: true,
@@ -28,6 +28,7 @@ export default defineConfig({
 					items: [
 						{ label: 'A development instance', slug: 'getting-started/dev-instance' },
 						{ label: 'A mail program', slug: 'getting-started/mail-program' },
+							{ label: 'Calendar and contacts programs', slug: 'getting-started/dav-clients' },
 						{ label: 'Live reload', slug: 'getting-started/live-reload' },
 					],
 				},
@@ -49,6 +50,7 @@ export default defineConfig({
 						{ label: 'DNS records', slug: 'reference/dns' },
 					],
 				},
+				{ label: 'Calendars and contacts', slug: 'calendars-contacts' },
 				{ label: 'Webmail', slug: 'webmail' },
 				{ label: 'Testing', slug: 'testing' },
 				{ label: 'Security model', slug: 'security' },

@@ -44,3 +44,5 @@ password to mail programs for every account.
 RFC 8314). With those, Thunderbird's automatic set-up finds the server. robinmail also
 answers Outlook's Autodiscover and serves an Apple configuration profile. See
 [DNS records](/docs/reference/dns/).
+
+For calendars and contacts, see [Calendar and contacts programs](/docs/getting-started/dav-clients/).
