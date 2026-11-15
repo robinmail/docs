@@ -130,7 +130,13 @@ when `sendSchedulingMessages` is true.
 **Incoming invitations** are applied at delivery when the mail is not spam, holds an iTIP
 part, and comes from the organizer (REQUEST, ADD, CANCEL) or from the attendee it answers
 for (REPLY). An older SEQUENCE is ignored. The account's own answer and alarms stay while
-the sequence does. Nothing checks that the `From` field is genuine beyond Rspamd's score.
+the sequence does. The `From` field of mail from outside proves nothing by itself, so only
+a new invitation is taken on its word. An update or cancellation of an event the account
+already has, and every reply, is applied only when the `From` is verified: Rspamd found
+that DMARC passed for its domain, or the mail came from an account of this server.
+Otherwise it waits in the scheduling inbox, and the email stays in the Inbox
+([#45](https://github.com/robinmail/robinmail/issues/45)). Without Rspamd nothing from
+outside is verified; `calendar.imip_unverified` applies everything as before.
 
 **Free/busy** is known for accounts of this server: the CalDAV outbox POST,
 `free-busy-query` and JMAP `Principal/getAvailability`. Transparent, cancelled,

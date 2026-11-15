@@ -6,37 +6,45 @@ description: How robinmail protects accounts and mail, what the review of 2026-1
 ## Status
 
 An adversarial review of the Go server was done on 2026-11-15 by an AI session that did
-not write the code. The webmail clients were left out on purpose. No human has audited
-robinmail.
-
-The review came before phases 9 and 10. Calendars and contacts (JMAP, CalDAV, CardDAV,
-invitations) and the embedded database have not been reviewed.
+not write the code. A second pass the same day fixed what was left open and reviewed
+calendars and contacts (JMAP, CalDAV, CardDAV, invitations by email, the iCalendar and
+vCard parsers) and the embedded database (Raft, snapshots, the control listener). The
+webmail clients were left out on purpose. No human has audited robinmail.
 
 | Severity | Found | Fixed | Open |
 |---|---|---|---|
 | Critical | 0 | 0 | 0 |
 | High | 1 | 1 | 0 |
-| Medium | 7 | 5 | 2 (one partly fixed) |
-| Low | 8 | 1 | 7 |
+| Medium | 9 | 9 | 0 |
+| Low | 10 | 4 | 6 |
 
 Every finding of medium severity or higher is a public issue. The tracking issue is
 [robinmail/robinmail#44](https://github.com/robinmail/robinmail/issues/44).
 
-**Verdict of the review:** fit to face the internet with throwaway accounts. Not yet with
-real mail.
+**Verdict:** no finding is open that lets a stranger read mail, take over an account,
+change a calendar, or take the server down. Real mail is reasonable for a small group that
+accepts early software, with Rspamd on, the data directory on an encrypted disk, a default
+quota and backups, after a few weeks with throwaway accounts. The code has had AI reviews
+only, and it has not met real traffic.
 
-## What the review found no way to do
+## What the reviews found no way to do
 
 - Read another account's mail, over JMAP, IMAP, downloads or the HTML view.
+- Read or change another account's calendars and contacts, over JMAP or DAV, beyond what
+  was shared.
 - Take over an account, or relay mail as a stranger.
 - Run script in the webmail through an HTML message.
 - Smuggle a message through SMTP line endings, or inject commands before STARTTLS.
+- Reach the database without a member's certificate or the node's own.
 
 Also found sound: sessions and cookies, the cross-site request checks, account
 enumeration, the JWT and OIDC validation, the HTML sanitiser and its content security
 policy, the binding of every JMAP method and SQL statement to its account, alias loops and
-SRS, blob encryption and key wrapping, the node-to-node API, backup and restore, secrets in
-logs. `go vet` is clean and `govulncheck` reports no vulnerabilities.
+SRS, blob encryption and key wrapping, the node-to-node API and the Raft transport behind
+it, joining a cluster, backup and restore, secrets in logs. `go vet` is clean and
+`govulncheck` reports no vulnerabilities. The parsers of iCalendar, vCard, recurrence rules
+and the JSCalendar and JSContact conversions were fuzzed for ten minutes each without a
+failure.
 
 ## What was fixed
 
@@ -48,23 +56,27 @@ logs. `go vet` is clean and `govulncheck` reports no vulnerabilities.
 | [#37](https://github.com/robinmail/robinmail/issues/37) | medium | A Sieve script could make one run cost minutes of CPU. |
 | [#40](https://github.com/robinmail/robinmail/issues/40) | medium | A submitted message could carry more than one `From` field. |
 | [#42](https://github.com/robinmail/robinmail/issues/42) | medium | The outbound queue and HTTPS fetches could be pointed at internal addresses. |
+| [#41](https://github.com/robinmail/robinmail/issues/41) | medium | Anybody could lock an address out of its logins with wrong passwords. |
+| [#43](https://github.com/robinmail/robinmail/issues/43) | medium | Inbound SMTP could drive the process out of memory. |
+| [#45](https://github.com/robinmail/robinmail/issues/45) | medium | Invitation updates and cancellations by email were taken on the word of the `From` field. |
+| [#46](https://github.com/robinmail/robinmail/issues/46) | medium | An old recurring event of every second cost a second of CPU per calendar query. |
 | no issue | low | Turning TOTP on did not end mail sessions opened with the password. |
+| no issue | low | A panic in one SMTP or IMAP session, or one delivery attempt, ended the whole process. |
+| no issue | low | The HTTPS listener had no connection limit. |
+| no issue | low | Failed logins from many client addresses could write to the database without bound. |
 
 ## What is open
 
-Each issue has the options and a recommendation.
+All low:
 
-- **[#43](https://github.com/robinmail/robinmail/issues/43), medium.** The process can be
-  driven out of memory through the SMTP listener on a small machine. Until it is fixed,
-  lower `smtp.max_connections` and `smtp.max_message_bytes` to fit the memory you have.
-- **[#41](https://github.com/robinmail/robinmail/issues/41), medium, partly fixed.** Anybody
-  can lock an address out of the web login by sending wrong passwords for it. Logins with
-  an app password are no longer affected.
-- **Low:** no panic recovery in SMTP and IMAP sessions, so a panic in one session ends the
-  whole process; OIDC accounts are linked by the e-mail claim; the Docker image runs as
-  root; no default quota; no connection limit on the HTTPS listener; unbounded audit
-  writes from many client addresses; automatic replies count against the account's
-  sending limit.
+- OIDC links an existing account by its verified e-mail claim, and skips its TOTP unless
+  the provider has `require_totp`.
+- The Docker image runs as root.
+- No default quota: set `quota.default_bytes`.
+- Automatic replies count against the account's sending limit.
+- Every account sees every other account of the server as a principal, with its
+  free/busy times, across all domains the server hosts.
+- Calendar and contact data are in the database as text, like the header fields.
 
 ## The model
 
@@ -80,8 +92,19 @@ Each issue has the options and a recommendation.
 - **Two steps:** TOTP with recovery codes. The TOTP secret is sealed with the account's key.
 - **OIDC:** optional, for the webmail only. Authorization code flow with PKCE.
 - **Rate limits:** failures are counted in a 15 minute window for all nodes together: per
-  address for the web login, per address for mail programs, per address for TOTP codes, and
-  per client address (per /64 for IPv6) for all of them.
+  address for the web login, per address for mail programs that use the account password,
+  per address for TOTP codes, and per client address (per /64 for IPv6) for all of them.
+  Ten failures close an address for the rest of the window.
+- **Known devices:** a browser that completed a web login gets a cookie
+  (`__Host-robinmail-device`, 180 days) signed with a key derived from the master key. Its
+  wrong passwords count under the cookie and the client address instead of the address, so
+  a stranger's guesses do not lock the owner out of the webmail. The cookie is no
+  credential: a stolen one gives ten guesses, like an address.
+- **App passwords** are limited per client address only: they cannot be guessed, so a
+  stranger cannot close an address for mail programs that use them.
+- **Writes of failures:** each node writes at most a burst of 100, then 10 a second. Past
+  that a failure counts in that node's memory only and gets no auth event; the metric
+  `robinmail_auth_failure_writes_skipped_total` counts them.
 - **Audit log:** auth events and what administrators did, read with `robinmail audit`, kept
   for `auth.audit_retention_days`.
 
@@ -130,22 +153,37 @@ is set.
   `Origin` check applies when the cookie is there.
 - A user reaches only their own calendar and address book homes. What others share with
   them shows up in those homes, with the rights the owner gave: read, or read and write.
-- An invitation from outside is added to the calendar by itself when the mail's `From`
-  names the organizer and Rspamd did not take it for spam. Nothing more checks that the
-  `From` is genuine. This is an open question in PLAN.md.
+- A new invitation from outside is added to the calendar by itself when the mail's `From`
+  names the organizer and Rspamd did not take it for spam.
+- An update or cancellation of an event the account has, and a reply, are applied only
+  when the `From` is verified: Rspamd found that DMARC passed for its domain, or the mail
+  came from an account of this server. Otherwise they wait in the scheduling inbox and the
+  email stays in the Inbox. Without Rspamd nothing from outside is verified.
+  `calendar.imip_unverified` applies them anyway; the lab sets it.
+- Recurrence is expanded from near the range asked for, and stops at 250 000 instances for
+  a rule with COUNT.
 
 ### Listeners
 
 - IMAP and submission need TLS before any login.
 - `web.http_listen` and `metrics.listen` must be on loopback.
+- SMTP and submission hold messages in memory within `smtp.max_bytes_in_transit` [100 MiB]
+  together, `smtp.max_bytes_in_transit_per_ip` [25 MiB] per client address. Past it the
+  sender is told 452 and tries again later.
+- The HTTPS listener takes `web.max_connections` [1000], `web.max_connections_per_ip`
+  [100] per client address.
+- A panic ends one session, not the process.
 
 ## Before it faces the internet
 
 1. Put the data directory on an encrypted disk. It holds the database and the Raft log.
 2. Keep the master key file apart from the backups of the data.
 3. Let only the other nodes reach the node port (`node.listen`).
-4. Set the SMTP limits to fit the machine's memory.
-5. Start with throwaway accounts.
+4. Run Rspamd: it scans for spam and is what verifies invitation updates by email.
+5. Set a default quota.
+6. Check that the SMTP limits fit the machine's memory: the defaults hold at most 100 MiB
+   of messages in transit; delivery copies a message two or three times.
+7. Start with throwaway accounts.
 
 ## Reporting a problem
 

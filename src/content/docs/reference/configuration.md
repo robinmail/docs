@@ -63,13 +63,13 @@ The inbound listener.
 | `max_recipients` | Recipients per message. At least 100. [100] |
 | `max_connections` | Connections at once. [100] |
 | `max_connections_per_ip` | Connections from one client address. [10] |
+| `max_bytes_in_transit` | Bytes of messages the SMTP and submission listeners hold in memory together, while they arrive and are delivered. Past it a message is answered 452 4.3.1 and sent again later. At least `max_message_bytes`. [4 × `max_message_bytes`, 100 MiB] |
+| `max_bytes_in_transit_per_ip` | The share of that one client address may hold (an IPv6 /64 counts as one). At least `max_message_bytes`. [`max_message_bytes`] |
 
-:::caution
-The listener holds each message in memory while it arrives. With the defaults that can add
-up to several GiB. On a small machine, lower `max_connections` and `max_message_bytes` to
-fit the memory you have. This is open issue
-[#43](https://github.com/robinmail/robinmail/issues/43).
-:::
+A message is held in memory whole while it arrives and is delivered, and delivery makes
+two or three copies of it. With the defaults that stays within a few hundred MiB. On a
+machine with less memory, lower `max_bytes_in_transit`
+([#43](https://github.com/robinmail/robinmail/issues/43)).
 
 ## `submission`
 
@@ -104,6 +104,8 @@ Login, JMAP and the webmail, on one origin. Without a listener it is off.
 | `listen` | The HTTPS listener, usually `:443`. With ACME, also where the certificate is validated. |
 | `http_listen` | A plain HTTP listener for development and tests. Must be on a loopback address. |
 | `dev_origins` | Origins besides the server's own that may call the API, such as `http://localhost:5173` for Vite. Development only. |
+| `max_connections` | Connections to the HTTPS listener at once. One past it is closed. [1000] |
+| `max_connections_per_ip` | Connections to the HTTPS listener from one client address (an IPv6 /64). [100] |
 
 ## `rspamd`
 
@@ -162,6 +164,12 @@ node needs the same values.
 |---|---|
 | `default_bytes` | Octets of mail per account. `0` is no limit. [0] |
 | `default_messages` | Messages per account. `0` is no limit. [0] |
+
+## `calendar`
+
+| Field | What it sets |
+|---|---|
+| `imip_unverified` | Apply invitation updates, cancellations and replies that arrive by email also when their `From` field could not be verified (Rspamd is off, or DMARC did not pass). Anybody can then change or cancel events by writing the organizer's address. For tests. [false] |
 
 ## `mta_sts`
 

@@ -84,8 +84,9 @@ A selection; the file has them all.
 
 ### Calendars and contacts
 
-- Invitations from outside: add them only with a DMARC pass, only from senders in the
-  address book, or as now (when the `From` names the organizer and the mail is not spam)?
+- New invitations from outside are added from anyone whose `From` names the organizer;
+  updates, cancellations and replies need a DMARC pass. Should new ones need it too, or a
+  sender in the address book?
 - Reminders: should robinmail mail them, or push JMAP's CalendarAlert, for users without a
   calendar program?
 - Public calendar links, a read-only `.ics` URL to subscribe to: wanted?
