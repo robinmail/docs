@@ -38,10 +38,13 @@ The config, the database schema and the commands change without notice. There ar
 migrations between schema versions, and no promise. There are no releases, no version
 tags and no `version` command.
 
-## No licence
+## Licence
 
-The repository has no LICENSE file. The default applies: you may read the code. Nothing
-grants you the right to use, change or distribute it.
+The code is under the [GNU Affero General Public License, version 3 or
+later](https://github.com/robinmail/robinmail/blob/main/LICENSE). You may use, change and
+share it. Whoever runs a changed robinmail for other people, as a service, must offer
+them its source. This documentation is under [CC BY-SA
+4.0](https://github.com/robinmail/docs/blob/main/LICENSE).
 
 ## Not in scope
 

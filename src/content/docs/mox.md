@@ -86,8 +86,8 @@ compose, which mox's has not.
 - Dropping privileges, a systemd unit ([#24](https://github.com/robinmail/robinmail/issues/24)).
 - Releases and a tested upgrade path ([#25](https://github.com/robinmail/robinmail/issues/25)).
 - Tests against real providers and clients ([#26](https://github.com/robinmail/robinmail/issues/26)).
-- Documentation ([#27](https://github.com/robinmail/robinmail/issues/27)) and a licence
-  ([#28](https://github.com/robinmail/robinmail/issues/28)).
+- Documentation ([#27](https://github.com/robinmail/robinmail/issues/27)); both now exist,
+  and the code is AGPL-3.0-or-later ([#28](https://github.com/robinmail/robinmail/issues/28)).
 
 The full table, feature by feature, is
 [docs/mox-parity.md](https://github.com/robinmail/robinmail/blob/main/docs/mox-parity.md) in

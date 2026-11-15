@@ -37,7 +37,6 @@ not.
   ([#41](https://github.com/robinmail/robinmail/issues/41)).
 - Test against real providers and clients: which host and domain is still open
   ([#26](https://github.com/robinmail/robinmail/issues/26)).
-- Choose a licence ([#28](https://github.com/robinmail/robinmail/issues/28)).
 - Releases, a `version` command and a tested upgrade path
   ([#25](https://github.com/robinmail/robinmail/issues/25)).
 - Drop privileges after binding ports, and a systemd unit

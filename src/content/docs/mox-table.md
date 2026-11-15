@@ -146,7 +146,7 @@ mox: none (roadmap: "JMAP, IMAP OBJECTID extension, IMAP JMAPACCESS extension").
 | Calendars and contacts | No | JMAP, CalDAV, CardDAV, invitations by email (since phase 9) | n/a | - |
 | Upgrades | `test-upgrade.sh` over all releases | Migrations, untested across versions | no | [#25](https://github.com/robinmail/robinmail/issues/25) |
 | Releases, version, reproducible build | Yes | No tags, no `version` | no | [#25](https://github.com/robinmail/robinmail/issues/25) |
-| Licence | MIT | None | open question | [#28](https://github.com/robinmail/robinmail/issues/28) |
+| Licence | MIT | AGPL-3.0-or-later | yes | [#28](https://github.com/robinmail/robinmail/issues/28) |
 | Real provider and client tests | Claimed in README | Lab only | open question | [#26](https://github.com/robinmail/robinmail/issues/26) |
 | Documentation | Generated config and command reference, RFC table | README, PLAN.md, example JSON | no | [#27](https://github.com/robinmail/robinmail/issues/27) |
 

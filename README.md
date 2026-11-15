@@ -37,3 +37,8 @@ writes the static site to `dist/`. `npm run preview` serves that build.
 The pages are written from the robinmail repository: its `docs/`, `PLAN.md`,
 `README.md`, `robinmail.example.json`, `Makefile`, `contrib/` and the code. Where
 those disagree, the code wins. Short sentences, no marketing words.
+
+## Licence
+
+The text of this site is under [CC BY-SA 4.0](LICENSE). robinmail itself is
+[AGPL-3.0-or-later](https://github.com/robinmail/robinmail/blob/main/LICENSE).
