@@ -39,6 +39,8 @@ Each gap has an issue; the tracking issue is
 
 ## Gaps by area
 
+Every feature, area by area: [mox, feature by feature](/docs/mox-table/).
+
 ### SMTP and sending
 
 - REQUIRETLS ([#1](https://github.com/robinmail/robinmail/issues/1)).

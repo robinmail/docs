@@ -51,6 +51,7 @@ export default defineConfig({
 				{ label: 'Testing', slug: 'testing' },
 				{ label: 'Security model', slug: 'security' },
 				{ label: 'Compared with mox', slug: 'mox' },
+				{ label: 'mox, feature by feature', slug: 'mox-table' },
 				{ label: 'Roadmap', slug: 'roadmap' },
 			],
 		}),
