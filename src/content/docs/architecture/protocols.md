@@ -47,7 +47,12 @@ Limits: `smtp.max_message_bytes` (25 MiB), `max_recipients` (100), `max_connecti
 
 ## IMAP (993, 143)
 
-- IMAP4rev1 (RFC 3501) and IMAP4rev2 (RFC 9051).
+- IMAP4rev1 (RFC 3501) is the default.
+- IMAP4rev2 (RFC 9051) is used when the client sends `ENABLE IMAP4rev2`. Then mailbox names
+  are UTF-8, `SEARCH` answers with `ESEARCH`, `SELECT` gives no `RECENT` and no `UNSEEN`,
+  `[CLOSED]` comes when another mailbox is selected, and `STATUS` has `SIZE` and `DELETED`.
+  The rev1 commands keep working.
+- Both are announced in `CAPABILITY`.
 - 993 has TLS from the first byte. 143 offers `STARTTLS` and announces `LOGINDISABLED`
   until then.
 - After login: `IDLE`, `NAMESPACE`, `UNSELECT`, `UIDPLUS`, `MOVE`, `SPECIAL-USE`,
@@ -59,6 +64,22 @@ Limits: `smtp.max_message_bytes` (25 MiB), `max_recipients` (100), `max_connecti
 - `SEARCH BODY` and `TEXT` match whole words, as the index does. RFC 9051 asks for
   substrings.
 - Not built: `QRESYNC`, `NOTIFY`, `METADATA`, `COMPRESS`, SCRAM.
+
+### Mail clients by IMAP version
+
+| Client | Version tried | Spec it runs | What it enables |
+|---|---|---|---|
+| Thunderbird | 153.7.0 ESR | IMAP4rev1 | `UTF8=ACCEPT`, seen in the lab's trace |
+| mbsync (isync) | 1.5.1 | IMAP4rev1 | `UTF8=ACCEPT`, from its source |
+| OfflineIMAP | 8.0.0 (Debian 13's `offlineimap3`) | IMAP4rev1 | nothing; it sends no `ENABLE` and writes folder names in modified UTF-7 itself |
+| Apple Mail, iOS Mail, Outlook | not tried | unknown | unknown |
+
+- Each version above is the one the lab runs. Every lab test passes with them.
+- No client tried so far sends `ENABLE IMAP4rev2`. The rev2 behaviour is tested by the Go
+  tests of `internal/imap` (`TestRFC9051Rev2`), not by a real client.
+- `UTF8=ACCEPT` alone gives UTF-8 mailbox names and leaves the rest IMAP4rev1.
+- Dovecot's ImapTest also runs in the lab. It is a test tool, not a client, so it is not in
+  the table.
 
 ## JMAP (443)
 
