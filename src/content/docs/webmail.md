@@ -1,29 +1,25 @@
 ---
 title: Webmail
-description: The Angular webmail with mail, calendar and contacts, the Vue one with mail only, how each is built, and how mail is shown.
+description: The Angular webmail with mail, calendar and contacts, how it is built, and how mail is shown.
 ---
 
-There are two webmails. Both speak only JMAP and the `/auth` API, on the same origin as
-the server. Nothing renders on a server: each is built to static files and embedded in the
-binary with `go:embed`.
+The webmail speaks only JMAP and the `/auth` API, on the same origin as the server.
+Nothing renders on a server: it is built to static files and embedded in the binary with
+`go:embed`. It has mail, calendar and contacts.
 
-Since phase 9 the Angular webmail is the main one. It has mail, calendar and contacts. The
-Vue webmail has mail only and stays buildable.
+| | |
+|---|---|
+| Directory | `web-ng/` |
+| Stack | Angular 22.2, zoneless, signals; Tailwind 4, Angular CDK, own components |
+| Build | `make` |
+| Binary | `./robinmail` (build tag `webmail`) |
+| Unit tests | `make test-web` |
+| Browser tests | `make e2e` (Playwright, in `e2e/`) |
+| Live reload | `make dev` |
 
-| | Angular | Vue |
-|---|---|---|
-| Directory | `web-ng/` | `web/` |
-| Stack | Angular 22.2, zoneless, signals; Tailwind 4, Angular CDK, own components | Vue 3, Vite, Vue Router, Nuxt UI (without Nuxt) |
-| Has | mail, calendar, contacts | mail |
-| Build | `make` | `make build-vue` |
-| Binary | `./robinmail` (build tag `webmail_ng`) | `./robinmail-vue` (build tag `webmail`) |
-| Unit tests | `make test-web` | `make test-vue` |
-| Browser tests | `make e2e` | `make e2e-vue` |
-| Live reload | `make dev` | `make dev-vue` |
-
-The Docker image carries the Angular webmail. A plain `go build ./cmd/robinmail` needs no
-Node: that binary answers with a placeholder page. The names of before phase 9
-(`build-ng`, `test-ng`, `e2e-ng`, `dev-ng`) still work.
+The Docker image carries the webmail. A plain `go build ./cmd/robinmail` needs no Node:
+that binary answers with a placeholder page. A first webmail in Vue (`web/`) was removed on
+2026-11-15; the git history has it.
 
 ## The screens
 
@@ -94,8 +90,7 @@ One workspace in `web-ng/` with three projects:
 The libraries are built with `@angular/build:ng-packagr`. A builder named
 `@angular/build:library` does not exist in Angular 22.2.
 
-The browser tests in `web/e2e` run against both webmails. Against the Angular build at the
-end of phase 10, 33 pass and 14 are skipped by design. Against the Vue build, the calendar
-and contacts tests are skipped.
+The browser tests in `e2e/` run against the binary with the webmail inside. At the end of
+phase 10, 33 pass and 14 are skipped by design.
 
 Left to do: virtual scrolling of the message list, and a linter.

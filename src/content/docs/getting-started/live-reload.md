@@ -24,17 +24,7 @@ Open http://localhost:4200. Its proxy (`web-ng/proxy.conf.mjs`) passes the API o
 server and keeps the browser's `Host` and `Origin`, so the server takes the request as its
 own page's. Port 4200 needs no entry in `web.dev_origins`.
 
-Ctrl-C stops both. `make dev-ng` is the old name and still works.
-
-## The Vue webmail
-
-```bash
-make dev-vue
-```
-
-The same, with Vite in `web/` on http://localhost:5173. Vite passes `/jmap`,
-`/.well-known/jmap` and `/auth` on to the Go server. The config allows that origin with
-`web.dev_origins`. The Vue webmail has mail only: no calendar and no contacts.
+Ctrl-C stops both.
 
 ## What you need first
 

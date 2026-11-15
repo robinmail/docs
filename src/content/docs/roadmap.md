@@ -23,7 +23,6 @@ not.
 - Not built: notifications of calendar events and shares, `/copy`, `/queryChanges` of
   events, cards and principals, per-user properties of shared calendars, COUNTER and
   REFRESH, Schedule-Tag, DAV LOCK, ACL and COPY, public calendar links.
-- The Vue webmail has no calendar and no contacts.
 - A node that lost its data directory joins again as a new member. There is no
   "replace in place".
 - Membership changes go one at a time. A snapshot is the whole database, sent at once.

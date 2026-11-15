@@ -9,16 +9,13 @@ description: Every make target, the lab and the cluster, and what no test covers
 |---|---|---|
 | `make test` | `go vet` and `go test -race`, with and without the webmail in the binary; unit tests of the Angular webmail | Node |
 | `make test-web` | only the Angular webmail's unit tests | Node |
-| `make test-vue` | the Vue webmail's type check and unit tests, and the Go tests of the binary with it | Node |
-| `make e2e` | the browser tests (Playwright) against `./robinmail` with the Angular webmail, on port 8085 | Mailpit for one test |
-| `make e2e-vue` | the same tests against `./robinmail-vue`; the calendar and contacts tests are skipped | Mailpit for one test |
+| `make e2e` | the browser tests (Playwright, in `e2e/`) against `./robinmail` with the webmail, on port 8085 | Mailpit for one test |
 | `make keycloak-test` | the OIDC login against a real Keycloak in Docker | Docker |
 | `make cluster-test` | three robinmail nodes; nodes are killed and restarted, the database leader included | Docker |
 | `make lab-test` | robinmail next to Postfix, Exim and OpenSMTPD, with real IMAP clients, DAV clients and Thunderbird | Docker |
 | `make thunderbird-test` | only the Thunderbird tests of the lab | Docker |
 
-`KEEP=1` leaves the Keycloak, the cluster or the lab running after the test. The names of
-before phase 9 (`test-ng`, `e2e-ng`, `build-ng`, `dev-ng`) still work.
+`KEEP=1` leaves the Keycloak, the cluster or the lab running after the test.
 
 ## Go tests
 
