@@ -4,13 +4,31 @@ description: What is in progress, what is open, and the questions PLAN.md leaves
 ---
 
 robinmail was built in phases, each by its own session, each ending in something shown
-working. Phases 0 to 8 are done. This page lists what is not.
+working. Phases 0 to 10 are done, and so is the Angular webmail. This page lists what is
+not.
 
-## In progress
+## Recently done
 
-**The Angular webmail** (`web-ng/`). The screens are there and pass the same browser tests
-as the Vue webmail. Left: virtual scrolling of the message list, a linter, a choice of
-webmail for the Docker image. See [Webmail](/docs/webmail/).
+- **Phase 9: calendars and contacts.** JMAP Calendars, Contacts and Principals; CalDAV and
+  CardDAV; invitations by email; sharing between accounts. The Angular webmail became the
+  main one. See [Calendars and contacts](/docs/calendars-contacts/).
+- **Phase 10: embedded Raft and SQLite.** rqlite is gone. The robinmail nodes are the whole
+  cluster. See [Metadata: embedded Raft and SQLite](/docs/architecture/database/).
+
+## Left from phases 9 and 10
+
+- Try an iPhone, macOS Calendar and Contacts, and DAVx5 against the DAV server. Only
+  Thunderbird, vdirsyncer and the Python caldav library have been tried.
+- Four JMAP-TestSuite files about calendars, contacts and principals fail.
+- Not built: notifications of calendar events and shares, `/copy`, `/queryChanges` of
+  events, cards and principals, per-user properties of shared calendars, COUNTER and
+  REFRESH, Schedule-Tag, DAV LOCK, ACL and COPY, public calendar links.
+- The Vue webmail has no calendar and no contacts.
+- A node that lost its data directory joins again as a new member. There is no
+  "replace in place".
+- Membership changes go one at a time. A snapshot is the whole database, sent at once.
+- Five nodes have not been tested.
+- Virtual scrolling of the message list and a linter for the Angular webmail.
 
 ## Before real mail
 
@@ -63,12 +81,23 @@ A selection; the file has them all.
 - Push and IDLE are up to a second late across nodes.
 - A backup takes the list of blobs from the live database, not from the copy.
 - `user remove` deletes a large account in one large Raft entry.
+- The database and the Raft log are not encrypted on disk.
+
+### Calendars and contacts
+
+- Invitations from outside: add them only with a DMARC pass, only from senders in the
+  address book, or as now (when the `From` names the organizer and the mail is not spam)?
+- Reminders: should robinmail mail them, or push JMAP's CalendarAlert, for users without a
+  calendar program?
+- Public calendar links, a read-only `.ics` URL to subscribe to: wanted?
+- Mailbox delegation and calendar proxies ("send on behalf of", a secretary's access). A
+  phase of its own?
 
 ### Mail
 
 - A line longer than 998 characters goes out as it came in. Refuse it, or re-encode?
 - DKIM keys are files on every Rspamd, copied by hand. Rspamd could take the key with the
-  request, which would let robinmail keep keys in rqlite.
+  request, which would let robinmail keep keys in its database.
 - `undo_seconds` is a server setting. FUTURERELEASE would let a message choose.
 - A bounce the queue makes skips the user's Sieve script.
 

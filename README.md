@@ -1,8 +1,8 @@
 # robinmail docs
 
 The documentation site of [robinmail](https://github.com/robinmail/robinmail), a
-JMAP-first mail server in Go. Built with [Starlight](https://starlight.astro.build)
-on Astro.
+JMAP-first mail, calendar and contacts server in Go. Built with
+[Starlight](https://starlight.astro.build) on Astro.
 
 Published at https://robinmail.github.io/docs/.
 

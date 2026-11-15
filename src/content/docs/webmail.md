@@ -1,35 +1,63 @@
 ---
 title: Webmail
-description: The Vue webmail and the Angular one, how each is built, and how mail is shown.
+description: The Angular webmail with mail, calendar and contacts, the Vue one with mail only, how each is built, and how mail is shown.
 ---
 
-There are two webmails with the same screens. Both speak only JMAP and the `/auth` API, on
-the same origin as the server. Nothing renders on a server: each is built to static files
-and embedded in the binary with `go:embed`.
+There are two webmails. Both speak only JMAP and the `/auth` API, on the same origin as
+the server. Nothing renders on a server: each is built to static files and embedded in the
+binary with `go:embed`.
 
-| | Vue | Angular |
+Since phase 9 the Angular webmail is the main one. It has mail, calendar and contacts. The
+Vue webmail has mail only and stays buildable.
+
+| | Angular | Vue |
 |---|---|---|
-| Directory | `web/` | `web-ng/` |
-| Stack | Vue 3, Vite, Vue Router, Nuxt UI (without Nuxt) | Angular 22.2, zoneless, signals; Tailwind 4, Angular CDK, own components |
-| Build | `make` | `make build-ng` |
-| Binary | `./robinmail` (build tag `webmail`) | `./robinmail-ng` (build tag `webmail_ng`) |
-| Unit tests | `make test-web` | `make test-ng` |
-| Browser tests | `make e2e` | `make e2e-ng` |
-| Live reload | `make dev` | `make dev-ng` |
-| Status | done | in progress |
+| Directory | `web-ng/` | `web/` |
+| Stack | Angular 22.2, zoneless, signals; Tailwind 4, Angular CDK, own components | Vue 3, Vite, Vue Router, Nuxt UI (without Nuxt) |
+| Has | mail, calendar, contacts | mail |
+| Build | `make` | `make build-vue` |
+| Binary | `./robinmail` (build tag `webmail_ng`) | `./robinmail-vue` (build tag `webmail`) |
+| Unit tests | `make test-web` | `make test-vue` |
+| Browser tests | `make e2e` | `make e2e-vue` |
+| Live reload | `make dev` | `make dev-vue` |
 
-The default binary and the Docker image carry the Vue webmail. A plain
-`go build ./cmd/robinmail` needs no Node: that binary answers with a placeholder page.
+The Docker image carries the Angular webmail. A plain `go build ./cmd/robinmail` needs no
+Node: that binary answers with a placeholder page. The names of before phase 9
+(`build-ng`, `test-ng`, `e2e-ng`, `dev-ng`) still work.
 
 ## The screens
 
+A switch at the top of the left column goes between Mail, Calendar and Contacts.
+
 - **Mail:** the mailboxes, a message list, threads, search, and the quota in the sidebar.
 - **Compose:** rich text, send with undo, drafts saved as you type.
+- **Calendar:** day, week and month; the user's calendars and those shared with them, each
+  shown or hidden. See below.
+- **Contacts:** list, search, detail, and an editor. See below.
 - **Identities:** the addresses to send from, aliases among them.
 - **Filters:** Sieve rules, made in a form and kept as a Sieve script.
 - **Vacation:** an automatic reply, with an optional start and end date.
 - **Security:** password, TOTP with recovery codes, app passwords, web sessions, and the
-  settings for mail programs with an Apple profile to download.
+  settings for mail, calendar and contacts programs, with an Apple profile to download.
+
+## Calendar
+
+- An editor with all day, start and end, location, repetition by day, week, month or year
+  with a count, guests, a reminder and notes.
+- One occurrence or the whole series changed or deleted.
+- Invitations with accept, maybe and decline.
+- Calendars made, coloured, shared by address, downloaded.
+- `.ics` import, through `CalendarEvent/parse`.
+
+Not there: dragging events, a time zone picker (the browser's zone is used), a free/busy
+view while inviting, attendees per occurrence, reminders shown by the webmail.
+
+## Contacts
+
+- An editor with names, organization, addresses, numbers, birthday and notes.
+- `.vcf` import through CardDAV, and download.
+
+Not there: contact groups and photos in the editor.
 
 ## Login
 
@@ -57,8 +85,8 @@ password.
 One workspace in `web-ng/` with three projects:
 
 - `projects/jmap`, the library `@robinmail/jmap`: the JMAP client, sync, push, the mail and
-  compose stores, the `/auth` API, Sieve rules. These are the files of `web/src` with their
-  tests.
+  compose stores, the `/auth` API, Sieve rules. These started as the files of `web/src`
+  with their tests.
 - `projects/webmail`, the library `@robinmail/webmail`: every screen. It exports
   `webmailRoutes` and `provideWebmail()`.
 - `projects/shell`: a thin app that starts the router with those routes.
@@ -66,8 +94,8 @@ One workspace in `web-ng/` with three projects:
 The libraries are built with `@angular/build:ng-packagr`. A builder named
 `@angular/build:library` does not exist in Angular 22.2.
 
-The browser tests in `web/e2e` run against both webmails. Against the Angular build, 27
-pass and 14 are skipped, the same as against Vue.
+The browser tests in `web/e2e` run against both webmails. Against the Angular build at the
+end of phase 10, 33 pass and 14 are skipped by design. Against the Vue build, the calendar
+and contacts tests are skipped.
 
-Left to do: virtual scrolling of the message list, a linter, a choice of webmail for the
-Docker image.
+Left to do: virtual scrolling of the message list, and a linter.

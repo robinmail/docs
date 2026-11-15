@@ -22,6 +22,8 @@ the mail server. It changes nothing in DNS.
 | TLS-RPT | `_smtp._tls.example.org.` TXT | `v=TLSRPTv1; rua=mailto:postmaster@example.org` |
 | Autoconfig | `autoconfig.example.org.` CNAME | `<hostname>.` |
 | SRV | `_imaps`, `_imap`, `_submissions`, `_submission`, `_jmap`, `_autodiscover` | the port of each listener; `0 0 0 .` for one that is off and for POP3 |
+| SRV for DAV | `_caldavs._tcp`, `_carddavs._tcp` | the HTTPS port (`web.listen`); `0 0 0 .` for `_caldav` and `_carddav`, which would be plain HTTP |
+| TXT for DAV | `_caldavs._tcp.example.org.`, `_carddavs._tcp.example.org.` | `path=/dav/` (RFC 6764); printed only when `web.listen` is set |
 
 ## DKIM
 

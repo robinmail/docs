@@ -69,21 +69,34 @@ Capabilities:
 - `urn:ietf:params:jmap:quota` (RFC 9425)
 - `urn:ietf:params:jmap:sieve` (RFC 9661)
 - `urn:ietf:params:jmap:vacationresponse`
+- `urn:ietf:params:jmap:calendars` and `calendars:parse` (draft-ietf-jmap-calendars-33)
+- `urn:ietf:params:jmap:contacts` (RFC 9610)
+- `urn:ietf:params:jmap:principals`, `principals:owner` and `principals:availability`
+  (RFC 9670)
 
 Push over EventSource. A message submitted over JMAP waits `submission.undo_seconds` (10)
 before it is sent, so the user can still cancel it.
 
-Not built: `PushSubscription`, JMAP over WebSocket, blob management, MDN, contacts,
-calendars.
+Not built: `PushSubscription`, JMAP over WebSocket, blob management, MDN.
+
+## CalDAV and CardDAV (443)
+
+- Under `/dav/`, found through `/.well-known/caldav` and `/.well-known/carddav`.
+- CalDAV (RFC 4791) with scheduling (RFC 6638), CardDAV (RFC 6352), sync-collection
+  (RFC 6578).
+- Invitations to people on other servers go out as email (iMIP) through the queue.
+- Not built: LOCK, ACL, COPY, calendar proxies, public calendar URLs.
+
+See [Calendars and contacts](/docs/calendars-contacts/).
 
 ## The web side (443)
 
 One hostname. robinmail serves the API under `/jmap`, `/.well-known/jmap` and `/auth`,
-and the webmail everywhere else. It also serves:
+CalDAV and CardDAV under `/dav/`, and the webmail everywhere else. It also serves:
 
 - the MTA-STS policy of its domains at `https://mta-sts.<domain>/.well-known/mta-sts.txt`;
 - autoconfig for Thunderbird, Autodiscover for Outlook, and an Apple configuration
-  profile;
+  profile that sets up mail, calendars and contacts;
 - `/healthz`.
 
 `/metrics` is on its own listener (`metrics.listen`), which must be on loopback.
@@ -95,6 +108,7 @@ and the webmail everywhere else. It also serves:
 | Browser | account password (Argon2id), then TOTP if the account has it; or OIDC |
 | Mail program (IMAP, SMTP) | app password; the account password until the account has an app password or TOTP |
 | JMAP client with Basic auth | as a mail program |
+| Calendar or contacts program (`/dav`) | as a mail program, with an app password that allows `dav`; or the webmail's cookie |
 
 Ten wrong passwords close an address's web login for fifteen minutes. See the
 [Security model](/docs/security/).

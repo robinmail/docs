@@ -15,8 +15,10 @@ internet with throwaway accounts, not yet with real mail. See the
 ## Never tested against real providers
 
 robinmail has exchanged mail with Postfix, Exim and OpenSMTPD. It has been read by
-Thunderbird, mbsync, OfflineIMAP and Dovecot's ImapTest. All of that happened in a closed
-lab on one machine, with its own DNS and its own certificate authority.
+Thunderbird, mbsync, OfflineIMAP and Dovecot's ImapTest. It has synced calendars and
+contacts with Thunderbird, vdirsyncer and the Python caldav library, and sent invitations to
+Postfix and Exim. All of that happened in a closed lab on one machine, with its own DNS and
+its own certificate authority.
 
 It has never delivered a message to Gmail, Outlook or any other server on the internet.
 How they treat it is unknown. Only real providers can show:
@@ -26,8 +28,9 @@ How they treat it is unknown. Only real providers can show:
 - what their MTA-STS policies and certificates do under `enforce`;
 - whether their bounces parse.
 
-Also untested: ACME against a real certificate authority, and iOS Mail, Apple Mail and
-Outlook as clients.
+Also untested: ACME against a real certificate authority; iOS Mail, Apple Mail and Outlook
+as mail clients; an iPhone, macOS Calendar and Contacts, and DAVx5 as calendar and contacts
+clients.
 
 ## No stable formats
 
@@ -43,15 +46,15 @@ grants you the right to use, change or distribute it.
 ## Not in scope
 
 - POP3.
-- CalDAV and CardDAV.
+- Delegation of mailboxes and calendar proxies ("send on behalf of", a secretary's access).
 - Migration tooling: no import or export of mbox or Maildir.
 - A general web server: no static files or reverse proxy in the binary.
 
 ## What it needs next to it
 
-robinmail is one binary, but it does not run alone:
+robinmail is one binary. The database is inside it. Next to it, it needs:
 
-- **rqlite** holds all metadata. It runs as a separate service.
-- **Rspamd** scans incoming mail and signs outgoing mail with DKIM. Without it, scanning is
-  off.
+- **Rspamd**, which scans incoming mail and signs outgoing mail with DKIM. Without it,
+  scanning is off.
+- For a cluster: three or more machines that reach each other on the node port.
 - A certificate, from files or from ACME.
