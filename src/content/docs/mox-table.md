@@ -5,7 +5,9 @@ description: Every feature compared with mox, by area, with the issue for each g
 
 The full table behind [Compared with mox](/docs/mox/). "On purpose": yes = robinmail
 left it out by decision; no = not built, no stated reason; n/a = both have it or neither.
-mox as of commit `b32f0de`, robinmail as of 2026-11-15.
+mox as of commit `b32f0de`, robinmail as of 2026-11-15, before phases 9 and 10. Rows those
+phases changed are updated and say so: the JMAP row, the database rows, and calendars and
+contacts.
 
 ## SMTP receiving and policy
 
@@ -91,7 +93,7 @@ Both: IMAP4rev1, IMAP4rev2, ENABLE, LITERAL+, IDLE, SASL-IR, BINARY (robinmail: 
 
 ## JMAP
 
-mox: none (roadmap: "JMAP, IMAP OBJECTID extension, IMAP JMAPACCESS extension"). robinmail: core, mail, submission, quota, sieve, vacationresponse, event-source push. Not in robinmail: `PushSubscription`, WebSocket, blob management, MDN, contacts, calendars. No parity issue; `PushSubscription` is mentioned in [#7](https://github.com/robinmail/robinmail/issues/7).
+mox: none (roadmap: "JMAP, IMAP OBJECTID extension, IMAP JMAPACCESS extension"). robinmail: core, mail, submission, quota, sieve, vacationresponse, event-source push, and since phase 9 calendars, contacts and principals. Not in robinmail: `PushSubscription`, WebSocket, blob management, MDN. No parity issue; `PushSubscription` is mentioned in [#7](https://github.com/robinmail/robinmail/issues/7).
 
 ## Accounts and auth
 
@@ -117,7 +119,7 @@ mox: none (roadmap: "JMAP, IMAP OBJECTID extension, IMAP JMAPACCESS extension").
 | Print DNS records | Yes, incl. CAA, TLSA | `robinmail dns`: MX, SPF, DKIM, DMARC, MTA-STS, TLS-RPT, SRV | partly | [#21](https://github.com/robinmail/robinmail/issues/21) |
 | Check live DNS | `config dnscheck`, admin page | No | no | [#21](https://github.com/robinmail/robinmail/issues/21) |
 | Monitor own IPs on DNSBLs | `MonitorDNSBLs` | No | no | [#21](https://github.com/robinmail/robinmail/issues/21) |
-| Config reload | Domains file reloaded | Domains, users, aliases live in rqlite; JSON needs restart | n/a | - |
+| Config reload | Domains file reloaded | Domains, users, aliases live in the database; JSON needs restart | n/a | - |
 | Import/export mbox, Maildir | Yes | No ("Not in scope: migration tooling") | yes | [#32](https://github.com/robinmail/robinmail/issues/32) |
 | Backup, verify | `backup`, `verifydata` | `backup`, `restore`, `verify`, `scrub`, `health` | n/a | - |
 | Metrics | Prometheus, example rules | Prometheus (`internal/metrics`) | n/a | - |
@@ -139,7 +141,9 @@ mox: none (roadmap: "JMAP, IMAP OBJECTID extension, IMAP JMAPACCESS extension").
 | systemd unit | Printed by `config printservice` | No | no | [#24](https://github.com/robinmail/robinmail/issues/24) |
 | Sandboxing | Roadmap | No | n/a | - |
 | Fuzzing | 12 files with fuzz tests | Fuzz tests in imap, message, sieve-adjacent packages (10 files) | n/a | - |
-| Single binary | Yes, nothing else needed | One binary plus rqlite and Rspamd | yes | [#29](https://github.com/robinmail/robinmail/issues/29) |
+| Single binary | Yes, nothing else needed | One binary with its database inside (since phase 10), plus Rspamd | yes | [#29](https://github.com/robinmail/robinmail/issues/29) |
+| Embedded database | Yes, one node | SQLite in the binary, replicated between nodes with Raft (since phase 10) | n/a | - |
+| Calendars and contacts | No | JMAP, CalDAV, CardDAV, invitations by email (since phase 9) | n/a | - |
 | Upgrades | `test-upgrade.sh` over all releases | Migrations, untested across versions | no | [#25](https://github.com/robinmail/robinmail/issues/25) |
 | Releases, version, reproducible build | Yes | No tags, no `version` | no | [#25](https://github.com/robinmail/robinmail/issues/25) |
 | Licence | MIT | None | open question | [#28](https://github.com/robinmail/robinmail/issues/28) |

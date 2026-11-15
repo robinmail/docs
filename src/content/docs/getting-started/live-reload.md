@@ -6,7 +6,9 @@ description: Work on a webmail with the Go server behind it.
 For work on a webmail, run it from its sources with live reload. The Go server runs next to
 it and answers the API.
 
-## The Vue webmail
+## The Angular webmail
+
+The main webmail since phase 9.
 
 ```bash
 make dev
@@ -16,29 +18,28 @@ This:
 
 1. runs `contrib/dev/seed.sh`, which builds `dev/robinmail` and sets up `./dev`;
 2. starts `dev/robinmail -config dev/robinmail.json serve` on http://127.0.0.1:8080;
-3. starts Vite in `web/` on http://localhost:5173.
+3. starts `ng serve` in `web-ng/` on http://localhost:4200.
 
-Open http://localhost:5173. Vite serves `web/src` with live reload and passes `/jmap`,
-`/.well-known/jmap` and `/auth` on to the Go server. The config allows that origin with
-`web.dev_origins`.
+Open http://localhost:4200. Its proxy (`web-ng/proxy.conf.mjs`) passes the API on to the Go
+server and keeps the browser's `Host` and `Origin`, so the server takes the request as its
+own page's. Port 4200 needs no entry in `web.dev_origins`.
 
-Ctrl-C stops both.
+Ctrl-C stops both. `make dev-ng` is the old name and still works.
 
-## The Angular webmail
+## The Vue webmail
 
 ```bash
-make dev-ng
+make dev-vue
 ```
 
-The same, with `ng serve` in `web-ng/` on http://localhost:4200. Its proxy
-(`web-ng/proxy.conf.mjs`) passes the same paths on and keeps the browser's `Host` and
-`Origin`, so the server takes the request as its own page's. Port 4200 needs no entry in
-`web.dev_origins`.
+The same, with Vite in `web/` on http://localhost:5173. Vite passes `/jmap`,
+`/.well-known/jmap` and `/auth` on to the Go server. The config allows that origin with
+`web.dev_origins`. The Vue webmail has mail only: no calendar and no contacts.
 
 ## What you need first
 
-- The compose services: `docker compose -f contrib/compose/compose.yaml up -d`.
 - Node. The first run installs the packages with `npm ci`.
+- Mailpit, for mail to other domains: `docker compose -f contrib/compose/compose.yaml up -d`.
 
 ## Changes to the Go code
 

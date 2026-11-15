@@ -36,8 +36,8 @@ The default binary and the Docker image carry the Vue webmail. A plain
 The session is a cookie: `Secure`, `HttpOnly`, `SameSite=Strict`, with the `__Host-`
 prefix. Every request to `/auth` and JMAP also has its `Origin` checked, and every request
 that changes state must be JSON with its content type. There is no CSRF token; the three
-checks leave no cross-site request for one to stop. Sessions are rows in rqlite, so any
-node accepts the cookie.
+checks leave no cross-site request for one to stop. Sessions are rows in the database, so
+any node accepts the cookie.
 
 With OIDC providers in the config, the login page offers "Log in with ..." next to the
 password.

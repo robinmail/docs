@@ -9,6 +9,9 @@ An adversarial review of the Go server was done on 2026-11-15 by an AI session t
 not write the code. The webmail clients were left out on purpose. No human has audited
 robinmail.
 
+The review came before phases 9 and 10. Calendars and contacts (JMAP, CalDAV, CardDAV,
+invitations) and the embedded database have not been reviewed.
+
 | Severity | Found | Fixed | Open |
 |---|---|---|---|
 | Critical | 0 | 0 | 0 |
@@ -71,8 +74,9 @@ Each issue has the options and a recommendation.
 - **Web sessions:** a cookie that is `Secure`, `HttpOnly`, `SameSite=Strict` and
   `__Host-`. An `Origin` check on every request to `/auth` and JMAP. JSON with its content
   type for everything that changes state.
-- **Mail programs:** app passwords. 160 random bits made by the server, stored as a hash,
-  limited to `imap`, `smtp` or `jmap` if wanted, revocable one by one.
+- **Mail, calendar and contacts programs:** app passwords. 160 random bits made by the
+  server, stored as a hash, limited to `imap`, `smtp`, `jmap` or `dav` if wanted, revocable
+  one by one.
 - **Two steps:** TOTP with recovery codes. The TOTP secret is sealed with the account's key.
 - **OIDC:** optional, for the webmail only. Authorization code flow with PKCE.
 - **Rate limits:** failures are counted in a 15 minute window for all nodes together: per
@@ -84,26 +88,51 @@ Each issue has the options and a recommendation.
 ### Data at rest
 
 - Message files are encrypted per account under the master key.
-- Metadata in rqlite is not. It holds addresses, subjects, previews and the full-text index,
-  from which a message can be put together again.
+- The database is not, nor is its Raft log. It holds addresses, subjects, previews, the
+  full-text index (from which a message can be put together again), and calendars and
+  contacts as plain text.
 - The running server holds the master key. Encryption at rest does not protect against a
   compromised server.
 
-### rqlite
+### The database
 
-Whoever can write to rqlite owns every account. It runs on loopback, with a login, and with
-mutual TLS between its nodes. See
-[rqlite, locked down](/docs/architecture/rqlite/#rqlite-locked-down).
+The database is inside robinmail. It has no port.
+
+- Raft messages, snapshots and the member list travel on the node API, next to the message
+  files. That API accepts only the certificates of the Raft members.
+- Commands reach the running server over a control listener on `127.0.0.1`, which accepts
+  only the node's own certificate.
+- Whoever has neither has no way to the database. Whoever has a shell on a node with its
+  data directory has every account.
+
+The cluster test checks this: the node API refuses Raft, snapshots, the member list, blobs
+and ping to a client without a member's certificate, and the control listener cannot be
+reached from another container.
+
+Until phase 10 the database was rqlite, a separate service whose HTTP port had to be locked
+down. That section of these docs is gone with it.
 
 ### Between nodes
 
-Mutual TLS, with each side accepting exactly the certificates whose fingerprint is in the
-node table.
+Mutual TLS, with each side accepting exactly the certificates of the Raft members. Who may
+join is decided by `robinmail node add` on a member, which names the newcomer's
+certificate.
 
 ### Outbound
 
 No connection to an address that is not public, unless `outbound.allow_private_addresses`
 is set.
+
+### Calendars and contacts
+
+- `/dav` takes Basic auth (an app password with the `dav` scope, or the account password
+  while the account has no app password and no TOTP) or the webmail's session cookie. The
+  `Origin` check applies when the cookie is there.
+- A user reaches only their own calendar and address book homes. What others share with
+  them shows up in those homes, with the rights the owner gave: read, or read and write.
+- An invitation from outside is added to the calendar by itself when the mail's `From`
+  names the organizer and Rspamd did not take it for spam. Nothing more checks that the
+  `From` is genuine. This is an open question in PLAN.md.
 
 ### Listeners
 
@@ -112,10 +141,9 @@ is set.
 
 ## Before it faces the internet
 
-1. Lock down rqlite as described in
-   [Metadata in rqlite](/docs/architecture/rqlite/#rqlite-locked-down).
-2. Put the data directory and rqlite's data directory on an encrypted disk.
-3. Keep the master key file apart from the backups of the data.
+1. Put the data directory on an encrypted disk. It holds the database and the Raft log.
+2. Keep the master key file apart from the backups of the data.
+3. Let only the other nodes reach the node port (`node.listen`).
 4. Set the SMTP limits to fit the machine's memory.
 5. Start with throwaway accounts.
 

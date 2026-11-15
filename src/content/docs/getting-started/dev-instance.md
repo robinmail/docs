@@ -19,14 +19,12 @@ This starts:
 
 | Service | Port on 127.0.0.1 | For |
 |---|---|---|
-| rqlite | `4001` | the Go tests |
-| rqlite | `4003` | the second server in the Go tests |
-| rqlite-dev | `4005` | the development instance only |
 | Mailpit | `1025` (SMTP), `8025` (web) | mail for other domains |
 | Rspamd | `11333` | the tests that scan mail |
 
-These rqlite nodes have no login. That is fine on loopback on your own machine, and
-nowhere else. See [Metadata in rqlite](/docs/architecture/rqlite/).
+The database is not a service. It is inside robinmail, in the instance's data directory.
+Without these services the instance runs too; mail for other domains then waits in the
+queue.
 
 ## 2. Seed the instance
 
@@ -37,6 +35,7 @@ contrib/dev/seed.sh
 The script makes the instance in `./dev`, which git ignores:
 
 - a config, `dev/robinmail.json`, from `contrib/dev/robinmail.dev.json`;
+- the database, in `dev/data/db`;
 - a master key;
 - a self-signed certificate for `localhost`, `127.0.0.1` and `mail.robinmail.test`;
 - the domain `robinmail.test`;
@@ -48,6 +47,15 @@ The password of both users is in `contrib/dev/seed.sh`. Set `ROBINMAIL_DEV_PASSW
 another. Run the script again any time. It rebuilds the binary and leaves existing users,
 mail and config alone.
 
+:::note[An instance from before phase 10]
+Until phase 10 the instance kept its data in rqlite, on port 4005. `seed.sh` sets a config
+that names rqlite aside, as `dev/robinmail.json.before-embedded`, and the instance starts
+fresh with the same master key. To move over once: stop the dev server,
+`rm -rf dev/data` (the old message files), run `contrib/dev/seed.sh`, and start the server
+again. The old rqlite containers can go: `docker rm -f robinmail-rqlite-1
+robinmail-rqlite-b-1 robinmail-rqlite-dev-1`.
+:::
+
 ## 3. Build with the webmail and run
 
 ```bash
@@ -58,7 +66,7 @@ make
 ./robinmail -config dev/robinmail.json serve
 ```
 
-`make` builds the Vue webmail and then `./robinmail` with the webmail inside.
+`make` builds the Angular webmail and then `./robinmail` with the webmail inside.
 
 | What | Where |
 |---|---|
@@ -66,6 +74,7 @@ make
 | IMAP | `127.0.0.1:1993` (TLS), `127.0.0.1:1143` (STARTTLS) |
 | Submission | `127.0.0.1:1465` (TLS), `127.0.0.1:1587` (STARTTLS) |
 | Inbound SMTP | `127.0.0.1:2525` |
+| CalDAV and CardDAV | http://127.0.0.1:8080/dav/ |
 | Mail for other domains | Mailpit, http://127.0.0.1:8025 |
 
 Log in as `dev@robinmail.test`.
@@ -82,4 +91,5 @@ Log in as `dev@robinmail.test`.
 ## Next
 
 - [A mail program](/docs/getting-started/mail-program/) such as Thunderbird.
+- [Calendar and contacts programs](/docs/getting-started/dav-clients/): Thunderbird, an iPhone.
 - [Live reload](/docs/getting-started/live-reload/) for work on the webmail.

@@ -22,13 +22,15 @@ Each gap has an issue; the tracking issue is
 | mbox and Maildir import, export | yes | no | [#32](https://github.com/robinmail/robinmail/issues/32) |
 | Web server for static files, proxy | yes | no | [#33](https://github.com/robinmail/robinmail/issues/33) |
 | Internationalised local parts | yes | ASCII only | [#34](https://github.com/robinmail/robinmail/issues/34) |
-| Dependencies at run time | none | rqlite and Rspamd | [#29](https://github.com/robinmail/robinmail/issues/29) |
+| Dependencies at run time | none | Rspamd | [#29](https://github.com/robinmail/robinmail/issues/29) |
 
 ## What robinmail has that mox does not
 
-- JMAP. mox has it on its roadmap.
+- JMAP, with calendars and contacts. mox has JMAP on its roadmap.
 - Sieve filters and vacation replies.
-- A cluster on rqlite with replicated message files.
+- Calendars and contacts: JMAP, CalDAV and CardDAV, sharing, invitations by email.
+- A cluster. Both embed their database; robinmail's is SQLite replicated between the nodes
+  with Raft, mox's is one node. Message files are copied between the nodes too.
 - Message files encrypted per account, with key rotation.
 - Labels: one message in several mailboxes.
 - TOTP, app passwords, OIDC login for the webmail.
