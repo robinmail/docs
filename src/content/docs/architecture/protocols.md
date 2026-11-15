@@ -1,0 +1,100 @@
+---
+title: Protocols
+description: What robinmail speaks on each port, and what it leaves out.
+---
+
+## Inbound SMTP (25)
+
+- Extensions: `PIPELINING`, `SIZE`, `8BITMIME`, `SMTPUTF8`, `ENHANCEDSTATUSCODES`,
+  `STARTTLS`.
+- Rspamd decides about spam, SPF, DKIM and DMARC. When Rspamd does not answer, mail gets a
+  temporary error, unless `rspamd.fail_open` is set.
+- A greylist answer from Rspamd gives a temporary error, only when its `GREYLIST` symbol
+  fired.
+- Sieve scripts run at delivery: `fileinto`, `redirect`, `vacation` and the other
+  extensions robinmail implements.
+- Aliases: an address, a pattern with one `*` (`sales-*@example.org`) or a catch-all
+  (`@example.org`). An alias delivers to accounts here or forwards elsewhere. Forwarded
+  mail gets a rewritten sender (SRS).
+- Subaddresses with `+`.
+- Local parts are ASCII only.
+
+Limits: `smtp.max_message_bytes` (25 MiB), `max_recipients` (100), `max_connections` (100),
+`max_connections_per_ip` (10).
+
+## Submission (465, 587)
+
+- 465 has TLS from the first byte. 587 starts in the clear and offers `STARTTLS`. No login
+  without TLS.
+- `AUTH PLAIN` and `AUTH LOGIN`.
+- The sender must be one of the account's addresses or aliases. One `From` and at most one
+  `Sender` field.
+- A limit of recipients per account per hour, over SMTP and JMAP together and across all
+  nodes (`submission.max_recipients_per_hour`, 300).
+- Rspamd signs with DKIM. The keys are files on each Rspamd.
+
+## Outbound
+
+- MX lookup, then delivery with STARTTLS.
+- MTA-STS (RFC 8461) for recipient domains, with the policies cached in rqlite for all
+  nodes.
+- Retries: five minutes, doubling up to four hours, for five days. Then a bounce.
+- Bounces as RFC 3464 delivery status notifications.
+- TLS reports (RFC 8460) sent once a day to domains that ask for them.
+- No connection to an address that is not public (loopback, private, link-local), unless
+  `outbound.allow_private_addresses` is set. Fixed `outbound.routes` are not affected.
+- No DANE.
+
+## IMAP (993, 143)
+
+- IMAP4rev1 (RFC 3501) and IMAP4rev2 (RFC 9051).
+- 993 has TLS from the first byte. 143 offers `STARTTLS` and announces `LOGINDISABLED`
+  until then.
+- After login: `IDLE`, `NAMESPACE`, `UNSELECT`, `UIDPLUS`, `MOVE`, `SPECIAL-USE`,
+  `CHILDREN`, `LIST-EXTENDED`, `LIST-STATUS`, `CONDSTORE`, `ESEARCH`, `SEARCHRES`, `BINARY`
+  (fetch only), `STATUS=SIZE`, `UTF8=ACCEPT`, `QUOTA`, and before login `LITERAL+`,
+  `SASL-IR`, `ID`, `ENABLE`.
+- Login: `AUTHENTICATE PLAIN` and the `LOGIN` command.
+- A label is a folder. A message with three labels is in three folders.
+- `SEARCH BODY` and `TEXT` match whole words, as the index does. RFC 9051 asks for
+  substrings.
+- Not built: `QRESYNC`, `NOTIFY`, `METADATA`, `COMPRESS`, SCRAM.
+
+## JMAP (443)
+
+Capabilities:
+
+- `urn:ietf:params:jmap:core` and `mail` (RFC 8620, RFC 8621)
+- `urn:ietf:params:jmap:submission`
+- `urn:ietf:params:jmap:quota` (RFC 9425)
+- `urn:ietf:params:jmap:sieve` (RFC 9661)
+- `urn:ietf:params:jmap:vacationresponse`
+
+Push over EventSource. A message submitted over JMAP waits `submission.undo_seconds` (10)
+before it is sent, so the user can still cancel it.
+
+Not built: `PushSubscription`, JMAP over WebSocket, blob management, MDN, contacts,
+calendars.
+
+## The web side (443)
+
+One hostname. robinmail serves the API under `/jmap`, `/.well-known/jmap` and `/auth`,
+and the webmail everywhere else. It also serves:
+
+- the MTA-STS policy of its domains at `https://mta-sts.<domain>/.well-known/mta-sts.txt`;
+- autoconfig for Thunderbird, Autodiscover for Outlook, and an Apple configuration
+  profile;
+- `/healthz`.
+
+`/metrics` is on its own listener (`metrics.listen`), which must be on loopback.
+
+## Logins
+
+| Who | How |
+|---|---|
+| Browser | account password (Argon2id), then TOTP if the account has it; or OIDC |
+| Mail program (IMAP, SMTP) | app password; the account password until the account has an app password or TOTP |
+| JMAP client with Basic auth | as a mail program |
+
+Ten wrong passwords close an address's web login for fifteen minutes. See the
+[Security model](/robinmail-docs/security/).
