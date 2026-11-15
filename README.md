@@ -1,10 +1,10 @@
-# robinmail-docs
+# robinmail docs
 
-The documentation site of [robinmail](https://github.com/mikepage/robinmail), a
+The documentation site of [robinmail](https://github.com/robinmail/robinmail), a
 JMAP-first mail server in Go. Built with [Starlight](https://starlight.astro.build)
 on Astro.
 
-Published at https://mikepage.github.io/robinmail-docs/.
+Published at https://robinmail.github.io/docs/.
 
 ## Run it locally
 
@@ -18,7 +18,7 @@ npm install
 npm run dev
 ```
 
-The site is then on http://localhost:4321/robinmail-docs/ and reloads on every change.
+The site is then on http://localhost:4321/docs/ and reloads on every change.
 
 ```bash
 npm run build

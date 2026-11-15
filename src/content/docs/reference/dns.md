@@ -52,4 +52,4 @@ With certificate files, the certificate has to cover `mta-sts.example.org` and
   `p=reject` when the reports are clean.
 
 Not printed: CAA and TLSA records. robinmail does not check the live DNS of a domain
-(issue [#21](https://github.com/mikepage/robinmail/issues/21)).
+(issue [#21](https://github.com/robinmail/robinmail/issues/21)).

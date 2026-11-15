@@ -7,7 +7,7 @@ A development instance runs on loopback. It sends mail for other domains to Mail
 mail catcher, so it never sends real mail.
 
 You need Go, Node and Docker, and a checkout of
-[robinmail](https://github.com/mikepage/robinmail).
+[robinmail](https://github.com/robinmail/robinmail).
 
 ## 1. Start the services
 
@@ -26,7 +26,7 @@ This starts:
 | Rspamd | `11333` | the tests that scan mail |
 
 These rqlite nodes have no login. That is fine on loopback on your own machine, and
-nowhere else. See [Metadata in rqlite](/robinmail-docs/architecture/rqlite/).
+nowhere else. See [Metadata in rqlite](/docs/architecture/rqlite/).
 
 ## 2. Seed the instance
 
@@ -81,5 +81,5 @@ Log in as `dev@robinmail.test`.
 
 ## Next
 
-- [A mail program](/robinmail-docs/getting-started/mail-program/) such as Thunderbird.
-- [Live reload](/robinmail-docs/getting-started/live-reload/) for work on the webmail.
+- [A mail program](/docs/getting-started/mail-program/) such as Thunderbird.
+- [Live reload](/docs/getting-started/live-reload/) for work on the webmail.

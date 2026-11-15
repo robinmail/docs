@@ -97,4 +97,4 @@ and the webmail everywhere else. It also serves:
 | JMAP client with Basic auth | as a mail program |
 
 Ten wrong passwords close an address's web login for fifteen minutes. See the
-[Security model](/robinmail-docs/security/).
+[Security model](/docs/security/).

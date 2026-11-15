@@ -43,4 +43,4 @@ password to mail programs for every account.
 `robinmail dns <domain>` prints an `autoconfig.<domain>` record and SRV records (RFC 6186,
 RFC 8314). With those, Thunderbird's automatic set-up finds the server. robinmail also
 answers Outlook's Autodiscover and serves an Apple configuration profile. See
-[DNS records](/robinmail-docs/reference/dns/).
+[DNS records](/docs/reference/dns/).

@@ -3,7 +3,7 @@ title: A cluster
 description: Several robinmail nodes on one rqlite cluster.
 ---
 
-![Three nodes. Each runs robinmail next to its own rqlite on loopback. rqlite nodes form one Raft cluster over mutual TLS. robinmail nodes copy blob files over mutual TLS.](/robinmail-docs/diagrams/cluster.svg)
+![Three nodes. Each runs robinmail next to its own rqlite on loopback. rqlite nodes form one Raft cluster over mutual TLS. robinmail nodes copy blob files over mutual TLS.](/docs/diagrams/cluster.svg)
 
 A cluster is several robinmail nodes on one rqlite cluster. Any node serves any account.
 There is no owner per account and no forwarding between nodes. rqlite's leader orders the
@@ -17,7 +17,7 @@ file, so a cluster can run in several availability zones without another storage
 ## Joining
 
 A node joins by having a `node` section in its config. See
-[Configuration](/robinmail-docs/reference/configuration/#node).
+[Configuration](/docs/reference/configuration/#node).
 
 ```json
 "node": {
@@ -69,4 +69,4 @@ every table is keyed by account.
 robinmail that the cluster exchanges mail with. The tests kill, freeze and restart
 containers. In the test that kills the rqlite leader, the node next to it took 870 of 6094
 deliveries and the other two the rest. Nothing was lost or doubled. See
-[Testing](/robinmail-docs/testing/).
+[Testing](/docs/testing/).

@@ -8,12 +8,12 @@ stores it, sends it, and serves it over JMAP (RFC 8620, RFC 8621) and IMAP. A we
 Vue ships inside the binary. The same webmail in Angular can be built in instead.
 
 It is built in public, by AI sessions, as an experiment:
-[github.com/mikepage/robinmail](https://github.com/mikepage/robinmail).
+[github.com/robinmail/robinmail](https://github.com/robinmail/robinmail).
 
 :::caution[A learning project]
 robinmail has never exchanged mail with a server on the internet. Nobody has run it under
-real load, and no human has audited it. Read [What it is not](/robinmail-docs/introduction/limits/)
-and the [Security model](/robinmail-docs/security/) before it faces the internet.
+real load, and no human has audited it. Read [What it is not](/docs/introduction/limits/)
+and the [Security model](/docs/security/) before it faces the internet.
 :::
 
 ## In short
@@ -45,11 +45,11 @@ Built and tested, phase by phase:
 - A three-node cluster, tested by killing and restarting nodes.
 
 The full record, with what was left out and why, is
-[PLAN.md](https://github.com/mikepage/robinmail/blob/main/PLAN.md) in the repository.
+[PLAN.md](https://github.com/robinmail/robinmail/blob/main/PLAN.md) in the repository.
 
 ## Where to start
 
-- To run it on your machine: [A development instance](/robinmail-docs/getting-started/dev-instance/).
-- To understand how it works: [Architecture](/robinmail-docs/architecture/overview/).
-- To set it up: [Configuration](/robinmail-docs/reference/configuration/) and
-  [Commands](/robinmail-docs/reference/commands/).
+- To run it on your machine: [A development instance](/docs/getting-started/dev-instance/).
+- To understand how it works: [Architecture](/docs/architecture/overview/).
+- To set it up: [Configuration](/docs/reference/configuration/) and
+  [Commands](/docs/reference/commands/).

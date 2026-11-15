@@ -126,4 +126,4 @@ backup and no restore of one account.
 |---|---|
 | `dns <domain> [dkim-key-file]` | Print the DNS records of a domain. A key file that does not exist is made. |
 
-See [DNS records](/robinmail-docs/reference/dns/).
+See [DNS records](/docs/reference/dns/).

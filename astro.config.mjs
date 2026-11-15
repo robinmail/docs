@@ -2,16 +2,16 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
-// Served by GitHub Pages at https://mikepage.github.io/robinmail-docs/.
+// Served by GitHub Pages at https://robinmail.github.io/docs/.
 export default defineConfig({
-	site: 'https://mikepage.github.io',
-	base: '/robinmail-docs',
+	site: 'https://robinmail.github.io',
+	base: '/docs',
 	integrations: [
 		starlight({
 			title: 'robinmail',
 			description: 'Documentation of robinmail, a JMAP-first mail server in Go. A learning project.',
-			social: [{ icon: 'github', label: 'robinmail on GitHub', href: 'https://github.com/mikepage/robinmail' }],
-			editLink: { baseUrl: 'https://github.com/mikepage/robinmail-docs/edit/main/' },
+			social: [{ icon: 'github', label: 'robinmail on GitHub', href: 'https://github.com/robinmail/robinmail' }],
+			editLink: { baseUrl: 'https://github.com/robinmail/docs/edit/main/' },
 			lastUpdated: true,
 			sidebar: [
 				{

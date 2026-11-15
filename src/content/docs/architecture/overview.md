@@ -3,13 +3,13 @@ title: Overview
 description: The parts of robinmail and where the data lives.
 ---
 
-![Mail servers, mail programs and browsers connect to one robinmail binary. It keeps metadata in rqlite, message files on its own disk, and asks Rspamd about spam.](/robinmail-docs/diagrams/overview.svg)
+![Mail servers, mail programs and browsers connect to one robinmail binary. It keeps metadata in rqlite, message files on its own disk, and asks Rspamd about spam.](/docs/diagrams/overview.svg)
 
 ## One binary
 
 `cmd/robinmail` holds every listener and every worker. The command `serve` runs them all;
 the other commands manage domains, accounts and the store. See
-[Commands](/robinmail-docs/reference/commands/).
+[Commands](/docs/reference/commands/).
 
 The only dependencies are the Go standard library and `golang.org/x` (`crypto`, `net`,
 `term`, `text`). rqlite is reached over HTTP with a client of robinmail's own. JWT, JWK,
@@ -71,7 +71,7 @@ sensitive as the mail. They belong on an encrypted disk.
 
 ## Read on
 
-- [Metadata in rqlite](/robinmail-docs/architecture/rqlite/)
-- [Message files](/robinmail-docs/architecture/blobs/)
-- [A cluster](/robinmail-docs/architecture/cluster/)
-- [Protocols](/robinmail-docs/architecture/protocols/)
+- [Metadata in rqlite](/docs/architecture/rqlite/)
+- [Message files](/docs/architecture/blobs/)
+- [A cluster](/docs/architecture/cluster/)
+- [Protocols](/docs/architecture/protocols/)

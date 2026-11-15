@@ -10,7 +10,7 @@ robinmail is a learning project. There is no production target yet.
 Nobody has run it under real load. No human has audited the code. An AI session that did
 not write the code reviewed the Go server on 2026-11-15. Its verdict: fit to face the
 internet with throwaway accounts, not yet with real mail. See the
-[Security model](/robinmail-docs/security/).
+[Security model](/docs/security/).
 
 ## Never tested against real providers
 

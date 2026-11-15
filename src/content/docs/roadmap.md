@@ -10,26 +10,26 @@ working. Phases 0 to 8 are done. This page lists what is not.
 
 **The Angular webmail** (`web-ng/`). The screens are there and pass the same browser tests
 as the Vue webmail. Left: virtual scrolling of the message list, a linter, a choice of
-webmail for the Docker image. See [Webmail](/robinmail-docs/webmail/).
+webmail for the Docker image. See [Webmail](/docs/webmail/).
 
 ## Before real mail
 
 - Fix the open security findings: memory use of inbound SMTP
-  ([#43](https://github.com/mikepage/robinmail/issues/43)) and the lockout of the web login
-  ([#41](https://github.com/mikepage/robinmail/issues/41)).
+  ([#43](https://github.com/robinmail/robinmail/issues/43)) and the lockout of the web login
+  ([#41](https://github.com/robinmail/robinmail/issues/41)).
 - Test against real providers and clients: which host and domain is still open
-  ([#26](https://github.com/mikepage/robinmail/issues/26)).
-- Choose a licence ([#28](https://github.com/mikepage/robinmail/issues/28)).
+  ([#26](https://github.com/robinmail/robinmail/issues/26)).
+- Choose a licence ([#28](https://github.com/robinmail/robinmail/issues/28)).
 - Releases, a `version` command and a tested upgrade path
-  ([#25](https://github.com/mikepage/robinmail/issues/25)).
+  ([#25](https://github.com/robinmail/robinmail/issues/25)).
 - Drop privileges after binding ports, and a systemd unit
-  ([#24](https://github.com/mikepage/robinmail/issues/24)).
+  ([#24](https://github.com/robinmail/robinmail/issues/24)).
 
-The other gaps against mox are on [Compared with mox](/robinmail-docs/mox/).
+The other gaps against mox are on [Compared with mox](/docs/mox/).
 
 ## Open questions
 
-From [PLAN.md](https://github.com/mikepage/robinmail/blob/main/PLAN.md#open-questions).
+From [PLAN.md](https://github.com/robinmail/robinmail/blob/main/PLAN.md#open-questions).
 A selection; the file has them all.
 
 ### Logins

@@ -4,7 +4,7 @@ description: Every block of robinmail.json, with its defaults.
 ---
 
 robinmail reads one JSON file, given with `-config` (default `robinmail.json`).
-[`robinmail.example.json`](https://github.com/mikepage/robinmail/blob/main/robinmail.example.json)
+[`robinmail.example.json`](https://github.com/robinmail/robinmail/blob/main/robinmail.example.json)
 in the repository shows every block.
 
 - An unknown field is an error.
@@ -36,7 +36,7 @@ Where all metadata lives. At least one URL is required.
 
 A URL may carry `user:password@`. Prefer `auth_file`: a URL with a password ends up in
 process lists and shell histories. See
-[rqlite, locked down](/robinmail-docs/architecture/rqlite/#rqlite-locked-down).
+[rqlite, locked down](/docs/architecture/rqlite/#rqlite-locked-down).
 
 ## `node`
 
@@ -79,7 +79,7 @@ The inbound listener.
 The listener holds each message in memory while it arrives. With the defaults that can add
 up to several GiB. On a small machine, lower `max_connections` and `max_message_bytes` to
 fit the memory you have. This is open issue
-[#43](https://github.com/mikepage/robinmail/issues/43).
+[#43](https://github.com/robinmail/robinmail/issues/43).
 :::
 
 ## `submission`

@@ -47,7 +47,7 @@ as "no such mailbox".
 
 The table `schema_version` is checked at start. An older database is migrated in one
 guarded batch per version. There is no promise across versions: see
-[What it is not](/robinmail-docs/introduction/limits/).
+[What it is not](/docs/introduction/limits/).
 
 ## rqlite, locked down
 

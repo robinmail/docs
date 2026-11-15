@@ -17,7 +17,7 @@ robinmail.
 | Low | 8 | 1 | 7 |
 
 Every finding of medium severity or higher is a public issue. The tracking issue is
-[mikepage/robinmail#44](https://github.com/mikepage/robinmail/issues/44).
+[robinmail/robinmail#44](https://github.com/robinmail/robinmail/issues/44).
 
 **Verdict of the review:** fit to face the internet with throwaway accounts. Not yet with
 real mail.
@@ -39,22 +39,22 @@ logs. `go vet` is clean and `govulncheck` reports no vulnerabilities.
 
 | Issue | Severity | What |
 |---|---|---|
-| [#38](https://github.com/mikepage/robinmail/issues/38) | high | Login rate limits could be outrun by many attempts at once. |
-| [#36](https://github.com/mikepage/robinmail/issues/36) | medium | Limits per client address counted every IPv6 address on its own; now per /64. |
-| [#39](https://github.com/mikepage/robinmail/issues/39) | medium | JMAP result references could grow a request past the size limit. |
-| [#37](https://github.com/mikepage/robinmail/issues/37) | medium | A Sieve script could make one run cost minutes of CPU. |
-| [#40](https://github.com/mikepage/robinmail/issues/40) | medium | A submitted message could carry more than one `From` field. |
-| [#42](https://github.com/mikepage/robinmail/issues/42) | medium | The outbound queue and HTTPS fetches could be pointed at internal addresses. |
+| [#38](https://github.com/robinmail/robinmail/issues/38) | high | Login rate limits could be outrun by many attempts at once. |
+| [#36](https://github.com/robinmail/robinmail/issues/36) | medium | Limits per client address counted every IPv6 address on its own; now per /64. |
+| [#39](https://github.com/robinmail/robinmail/issues/39) | medium | JMAP result references could grow a request past the size limit. |
+| [#37](https://github.com/robinmail/robinmail/issues/37) | medium | A Sieve script could make one run cost minutes of CPU. |
+| [#40](https://github.com/robinmail/robinmail/issues/40) | medium | A submitted message could carry more than one `From` field. |
+| [#42](https://github.com/robinmail/robinmail/issues/42) | medium | The outbound queue and HTTPS fetches could be pointed at internal addresses. |
 | no issue | low | Turning TOTP on did not end mail sessions opened with the password. |
 
 ## What is open
 
 Each issue has the options and a recommendation.
 
-- **[#43](https://github.com/mikepage/robinmail/issues/43), medium.** The process can be
+- **[#43](https://github.com/robinmail/robinmail/issues/43), medium.** The process can be
   driven out of memory through the SMTP listener on a small machine. Until it is fixed,
   lower `smtp.max_connections` and `smtp.max_message_bytes` to fit the memory you have.
-- **[#41](https://github.com/mikepage/robinmail/issues/41), medium, partly fixed.** Anybody
+- **[#41](https://github.com/robinmail/robinmail/issues/41), medium, partly fixed.** Anybody
   can lock an address out of the web login by sending wrong passwords for it. Logins with
   an app password are no longer affected.
 - **Low:** no panic recovery in SMTP and IMAP sessions, so a panic in one session ends the
@@ -93,7 +93,7 @@ Each issue has the options and a recommendation.
 
 Whoever can write to rqlite owns every account. It runs on loopback, with a login, and with
 mutual TLS between its nodes. See
-[rqlite, locked down](/robinmail-docs/architecture/rqlite/#rqlite-locked-down).
+[rqlite, locked down](/docs/architecture/rqlite/#rqlite-locked-down).
 
 ### Between nodes
 
@@ -113,7 +113,7 @@ is set.
 ## Before it faces the internet
 
 1. Lock down rqlite as described in
-   [Metadata in rqlite](/robinmail-docs/architecture/rqlite/#rqlite-locked-down).
+   [Metadata in rqlite](/docs/architecture/rqlite/#rqlite-locked-down).
 2. Put the data directory and rqlite's data directory on an encrypted disk.
 3. Keep the master key file apart from the backups of the data.
 4. Set the SMTP limits to fit the machine's memory.
@@ -121,5 +121,5 @@ is set.
 
 ## Reporting a problem
 
-Open an issue on [GitHub](https://github.com/mikepage/robinmail/issues). This is an
+Open an issue on [GitHub](https://github.com/robinmail/robinmail/issues). This is an
 experiment built in public. There is no private channel.
