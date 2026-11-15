@@ -8,7 +8,8 @@ robinmail reads one JSON file, given with `-config` (default `robinmail.json`).
 in the repository shows every block.
 
 - An unknown field is an error.
-- A field left out, or `0`, gets the default in the tables below.
+- A field left out, or `0`, gets the default in the tables below. One exception:
+  `submission.undo_seconds` set to `0` means no wait.
 - A relative path is resolved against the directory of the config file.
 - A change needs a restart. Domains, users and aliases are not in this file: they live in
   rqlite and change at once on every node.
